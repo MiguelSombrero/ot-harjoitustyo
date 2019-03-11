@@ -1,0 +1,131 @@
+commit a5a026fc1d8ed6a758f57b8008a5aa081c5d66f9
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 09:10:43 2019 +0200
+
+    poistoja jne
+
+ tiedostoja/file2             | 0
+ tiedostoja/{file1 => file22} | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 66a068508c7cbbeece25215326c4ad3b00384454
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 09:04:12 2019 +0200
+
+    uusi kansio
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit edbf71df4e70c9d9124535b565ba7ec68e43e65c
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 09:02:45 2019 +0200
+
+    poistetaan väärä tiedosto
+
+ eka.xt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 2744c226b38372c616bc8ebdc843a4b16add06d4
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 09:01:18 2019 +0200
+
+    eka versionhallintaan
+
+ eka.xt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit e417864abf2314681b8ad4ef577c1e6b45d3f206
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:55:21 2019 +0200
+
+    muutoksia muutoksia
+
+ kolmas.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c42561d4db020203b7a92cb360e125b66b5ed30e
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:27:44 2019 +0200
+
+    muutettu nimi
+
+ tiedosto.txt => eka.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 27930c56c0417f3820ae16160132bc063d05d587
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:26:30 2019 +0200
+
+    poistettu toinen
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 5889a3d7aaa80c44727d9f221456b61f43de86c6
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:22:03 2019 +0200
+
+    paljon tekstiä lisää
+
+ tiedosto.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 1742fdeba749499cfd28f4281e1aeca6b0276d08
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:21:01 2019 +0200
+
+    paljon tekstiä
+
+ tiedosto.txt | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+commit da3fa591f595081f649abbe5a624079f9e49335c
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:14:39 2019 +0200
+
+    uusi kansio
+
+ stuff/jokintiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 82e8052eae187a772f41d141a6b75099c2781940
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:13:37 2019 +0200
+
+    lisää muutoksia
+
+ kolmas.txt | 1 +
+ toinen.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit 0bcd91aef9281b8bf4062e94b4daa19c7adb3fdd
+Author: Miika Somero <miika.somero@gmail.com>
+Date:   Mon Mar 11 08:12:39 2019 +0200
+
+    kolmas
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 11573d12ee4fe07668752e8926bf3e5c59016040
+Author: Miika <miika.somero@gmail.com>
+Date:   Mon Mar 11 07:57:22 2019 +0200
+
+    muutos ja lisäys
+
+ tiedosto.txt | 1 +
+ toinen.txt   | 0
+ 2 files changed, 1 insertion(+)
+
+commit 4a114e1bf02e3b7d9492bd44c2bf114d799582d2
+Author: Miika <miika.somero@gmail.com>
+Date:   Mon Mar 11 07:54:52 2019 +0200
+
+    tiedosto.txt luotu
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
