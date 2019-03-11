@@ -1,7 +1,7 @@
 <h1>Ohjelmistotekniikan harjoitustyö</h1>
 
 Tämä on HY:n *Ohjelmistotekniikka* -kurssin harjoituksia ja harjoitustyötä
-varten luotu Github repositorio. Materiaali tulee päivittymään kurssin edetessä.
+varten luotu Github repositorio. Materiaali tulee päivittymään kurssin edetessä, jos en kuole.
 **Under construction ...**
 
 <h2>Tehtävät</h2>
