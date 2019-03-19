@@ -1,0 +1,23 @@
+.form {
+    -fx-padding: 20;
+    -fx-vgap: 10;
+    -fx-hgap: 10;
+    -fx-alignment: CENTER;
+}
+.login {
+    -fx-padding: 20;
+    -fx-pref-width: 450;
+    -fx-pref-height: 300;
+}
+.application {
+    -fx-padding: 20;
+    -fx-pref-width: 600;
+    -fx-pref-height: 400;
+}
+.buttonframe {
+    -fx-padding: 20;
+    -fx-spacing: 10;
+}
+.listbutton {
+    -fx-max-width: Infinity;
+}
