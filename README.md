@@ -18,4 +18,3 @@ varten luotu Github repositorio. Materiaali tulee päivittymään kurssin edetes
 
 [komentorivi.txt](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
 
-<h3>Viikko 2</h3>

@@ -3,10 +3,17 @@ package budgetapp.gui;
 
 import budgetapp.domain.CostController;
 import budgetapp.domain.UserController;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Optional;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -145,11 +152,35 @@ public class ApplicationView {
         });
         
         daily.setOnAction((event) -> {
+            double[] costs = costController.getDailyCosts(userController.getUser());
             
+            BarChart<String, Number> barchart = createBarChart(
+                    "Money consumption by day of week", "Day", "Money");
+            
+            XYChart.Series data = new XYChart.Series();
+            
+            for (int i = 1; i < costs.length; i++) {
+                data.getData().add(new XYChart.Data(DayOfWeek.of(i).toString(), costs[i]));
+            }
+            
+            barchart.getData().add(data);
+            layout.setCenter(barchart);
         });
         
         monthly.setOnAction((event) -> {
+            double[] costs = costController.getMonthlyCosts(userController.getUser());
             
+            BarChart<String, Number> barchart = createBarChart(
+                    "Money consumption by month", "Month", "Money");
+            
+            XYChart.Series data = new XYChart.Series();
+            
+            for (int i = 1; i < costs.length; i++) {
+                data.getData().add(new XYChart.Data(Month.of(i).toString(), costs[i]));
+            }
+            
+            barchart.getData().add(data);
+            layout.setCenter(barchart);
         });
         
         yearly.setOnAction((event) -> {
@@ -161,7 +192,7 @@ public class ApplicationView {
         });
         
         logout.setOnAction((event) -> {
-            logout(primaryStage);
+            logout(primaryStage, layout, addCostFrame);
         });
         
         changePassword.setOnAction((event) -> {
@@ -211,7 +242,7 @@ public class ApplicationView {
                     case 0:
                         information.setContentText("User removed succesfully!");
                         information.showAndWait();
-                        logout(primaryStage);
+                        logout(primaryStage, layout, addCostFrame);
                         break;
                     case 2:
                         error.setContentText("Remove user failed. Try again later!");
@@ -242,9 +273,35 @@ public class ApplicationView {
         return (string.length() > 4 && string.length() < 16);
     }
     
-    public void logout (Stage primaryStage) {
+    public void logout (Stage primaryStage, BorderPane layout, GridPane addCostFrame) {
         userController.logoutUser();
+        layout.setCenter(addCostFrame);
         primaryStage.setScene(loginScene);
+    }
+    
+    public BarChart<String, Number> createBarChart (String title, String x, String y) {
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barchart = new BarChart<>(xAxis, yAxis);
+        
+        xAxis.setLabel(x);
+        yAxis.setLabel(y);
+        barchart.setTitle(title);
+        barchart.setLegendVisible(false);
+        
+        return barchart;
+    }
+    
+    public LineChart<String, Number> createLineChart (String title, String x, String y) {
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        LineChart<String, Number> linechart = new LineChart<>(xAxis, yAxis);
+        
+        xAxis.setLabel(x);
+        yAxis.setLabel(y);
+        linechart.setTitle(title);
+        
+        return linechart;
     }
     
 }

@@ -112,20 +112,15 @@ public class LoginView {
             
             username.clear();
             password.clear();
+            changeToLoginView(helpText, changeView, frame, login, createUser);
         });
         
         changeView.setOnAction((event) -> {
             if (helpText.getText().equals("Login:")) {
-                helpText.setText("Create user:");
-                changeView.setText("Login");
-                frame.getChildren().remove(login);
-                frame.add(createUser, 1, 3);
+                changeToCreateView(helpText, changeView, frame, login, createUser);
             }
             else {
-                helpText.setText("Login:");
-                changeView.setText("New user ?");
-                frame.getChildren().remove(createUser);
-                frame.add(login, 1, 3);
+                changeToLoginView(helpText, changeView, frame, login, createUser);
             }
         });
         
@@ -147,5 +142,19 @@ public class LoginView {
     
     public boolean checkSyntax (String string) {
         return (string.length() > 4 && string.length() < 16);
+    }
+    
+    public void changeToCreateView (Label helpText, Button changeView, GridPane frame, Button login, Button createUser) {
+        helpText.setText("Create user:");
+        changeView.setText("Login");
+        frame.getChildren().remove(login);
+        frame.add(createUser, 1, 3);
+    }
+    
+    public void changeToLoginView (Label helpText, Button changeView, GridPane frame, Button login, Button createUser) {
+        helpText.setText("Login:");
+        changeView.setText("New user ?");
+        frame.getChildren().remove(createUser);
+        frame.add(login, 1, 3);
     }
 }

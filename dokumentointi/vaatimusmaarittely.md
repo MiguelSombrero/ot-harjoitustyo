@@ -34,5 +34,6 @@ Alkuvaiheessa sovelluksella on vain *peruskäyttäjä* -rooli. Jatkokehityksess�
 
 <h3>Jatkokehitys</h3>
 
-* Käyttöliittymään voisi lisätä toiminnallisuuden, jonka avulla käyttäjä/pääkäyttäjä voi lisätä uuden kulutuskategorian
+* Toiminnallisuus, jonka avulla käyttäjä/pääkäyttäjä voi lisätä uusia kulutuskategorioita
+
 

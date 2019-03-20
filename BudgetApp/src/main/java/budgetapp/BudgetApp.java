@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class BudgetApp extends Application {
 
     private UserController userController;
-    private CostController eventController;
+    private CostController costController;
     
     @Override
     public void init () throws Exception {
@@ -36,15 +36,15 @@ public class BudgetApp extends Application {
         database.createDatabase();
         
         this.userController = new UserController(userDao);
-        this.eventController = new CostController(eventDao);
+        this.costController = new CostController(eventDao);
     }
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LoginView loginView = new LoginView(userController, eventController);
+        LoginView loginView = new LoginView(userController, costController);
         Scene loginScene = loginView.getLoginScene(primaryStage);
         
-        ApplicationView appView = new ApplicationView(userController, eventController, loginScene);
+        ApplicationView appView = new ApplicationView(userController, costController, loginScene);
         Scene appScene = appView.getApplicationScene(primaryStage);
         
         loginView.setAppScene(appScene);

@@ -3,7 +3,6 @@ package budgetapp.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseDao {
@@ -30,7 +29,7 @@ public class DatabaseDao {
             "    password VARCHAR(20)," +
             "    created TEXT);";
             
-            String createEvent = "CREATE TABLE IF NOT EXISTS Cost (" +
+            String createCost = "CREATE TABLE IF NOT EXISTS Cost (" +
             "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
             "    userId VARCHAR(20)," +
             "    category VARCHAR(20)," +
@@ -38,8 +37,10 @@ public class DatabaseDao {
             "    purchased TEXT," +
             "    FOREIGN KEY (userId) REFERENCES User(username) ON DELETE CASCADE);";
             
+            // tämä ei vielä toimi, eikä ON DELETE CASCADE
             connection.prepareStatement(createUser).execute();
-            connection.prepareStatement(createEvent).execute();
+            connection.prepareStatement(createCost).execute();
+            //connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
             
         }
         catch (SQLException e) {

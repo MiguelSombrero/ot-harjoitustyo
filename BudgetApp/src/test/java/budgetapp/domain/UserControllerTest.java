@@ -2,10 +2,7 @@ package budgetapp.domain;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -88,8 +85,7 @@ public class UserControllerTest {
     public void canChangePasswordLoggedUser () throws SQLException {
         userController.loginUser("Miika", "Salasana");
         userController.changePassword("ToinenSalasana");
-        User user = userDao.read("Miika");
-        assertEquals("ToinenSalasana", user.getPassword());
+        assertEquals("ToinenSalasana", userDao.read("Miika").getPassword());
     }
     
     

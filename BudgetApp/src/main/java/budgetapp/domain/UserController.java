@@ -15,6 +15,14 @@ public class UserController {
         this.userDao = userDao;
     }
     
+    public String getUser () {
+        return this.user;
+    }
+    
+    public void setUser (String user) {
+        this.user = user;
+    }
+    
     public Integer createUser (String username, String password) {
         try {
             if (userDao.read(username) == null) {
@@ -61,11 +69,5 @@ public class UserController {
         catch (SQLException e) { return 2; }
     }
     
-    public String getUser () {
-        return this.user;
-    }
     
-    public void setUser (String user) {
-        this.user = user;
-    }
 }

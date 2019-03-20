@@ -10,5 +10,5 @@ public interface CostDao<T, K> {
     
     void remove (K key) throws SQLException;
     
-    List<T> list ();
+    List<T> list (K key) throws SQLException;
 }
