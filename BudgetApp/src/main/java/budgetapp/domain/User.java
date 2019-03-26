@@ -9,33 +9,33 @@ public class User {
     private String password;
     private LocalDate created;
     
-    public User (String username, String password, LocalDate created) {
+    public User(String username, String password, LocalDate created) {
         this.username = username;
         this.password = password;
         this.created = created;
     }
     
-    public String getUsername () {
+    public String getUsername() {
         return this.username;
     }
     
-    public String getPassword () {
+    public String getPassword() {
         return this.password;
     }
     
-    public LocalDate getCreated () {
+    public LocalDate getCreated() {
         return this.created;
     }
     
-    public void setUsername (String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
     
-    public void setPassword (String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
     
-    public void setCreated (LocalDate created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 }

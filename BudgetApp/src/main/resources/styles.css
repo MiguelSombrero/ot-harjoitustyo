@@ -11,8 +11,8 @@
 }
 .application {
     -fx-padding: 20;
-    -fx-pref-width: 600;
-    -fx-pref-height: 400;
+    -fx-pref-width: 700;
+    -fx-pref-height: 500;
 }
 .buttonframe {
     -fx-padding: 20;
@@ -20,4 +20,5 @@
 }
 .listbutton {
     -fx-max-width: Infinity;
+    -fx-alignment: CENTER;
 }

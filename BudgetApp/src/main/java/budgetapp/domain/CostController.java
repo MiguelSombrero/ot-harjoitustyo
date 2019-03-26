@@ -4,51 +4,83 @@ package budgetapp.domain;
 import budgetapp.dao.CostDao;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CostController {
     
     private CostDao costDao;
     
-    public CostController (CostDao costDao) {
+    public CostController(CostDao costDao) {
         this.costDao = costDao;
     }
     
-    public Integer addCost (String category, Double price, LocalDate purchased, String user) {
+    public Integer addCost(Category category, Double price, LocalDate purchased, String user) {
         try {
             costDao.create(new Cost(category, price, purchased, user));
             return 0;
             
-        } catch (SQLException e) { return 2; }
+        } catch (SQLException e) {
+            return 2;
+        }
     }
     
-    public double[] getDailyCosts (String user) {
-        double[] money = new double[8];
-        
+    public List<Cost> getCosts(String user) {
         try {
             List<Cost> costs = costDao.list(user);
             
-            for (Cost cost : costs) {
-                int dayofweek = cost.getPurchased().getDayOfWeek().getValue();
-                money[dayofweek] += cost.getPrice();
+            if (costs.isEmpty()) {
+                return null;
             }
-            return money;
-        
-        } catch (SQLException e) { return null; }
+            return costs;
+            
+        } catch (SQLException e) {
+            return null;
+        }
     }
     
-    public double[] getMonthlyCosts (String user) {
-        double[] money = new double[13];
+    public double[][] sum(List<Cost> costs) {
+        double[][] money = new double[5][32];
         
-        try {
-            List<Cost> costs = costDao.list(user);
-            
-            for (Cost cost : costs) {
-                int month = cost.getPurchased().getMonthValue();
-                money[month] += cost.getPrice();
-            }
-            return money;
+        for (Cost cost : costs) {
+            int category = cost.getCategory().ordinal();
+            int dayofweek = cost.getPurchased().getDayOfWeek().getValue();
+            int month = cost.getPurchased().getMonthValue();
+            double price = cost.getPrice();
+                
+            money[0][dayofweek] += price;
+            money[1][month] += price;
+            money[2][category] += price;
+        }
+        return money;
+    }
+    
+    public double[][] sumYearly(List<Cost> costs) {
+        double[][] money = new double[80][32];
         
-        } catch (SQLException e) { return null; }
+        for (Cost cost : costs) {
+            int category = cost.getCategory().ordinal();
+            int weekday = cost.getPurchased().getDayOfWeek().getValue();
+            int month = cost.getPurchased().getMonthValue();
+                
+            int year = cost.getPurchased().getYear() - 2000;
+            int categoryYear = year + 20;
+            int weekdayYear = year + 40;
+                
+            double price = cost.getPrice();
+                
+            money[weekdayYear][weekday] += price;
+            money[year][month] += price;
+            money[categoryYear][category] += price;
+                
+            money[year][0] = 1;
+            money[categoryYear][0] = 1;
+            money[weekdayYear][0] = 1;
+        }
+        return money;    
+    }
+    
+    public void emptyCostsCache(String user) {
+        costDao.remove(user);
     }
 }

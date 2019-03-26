@@ -17,7 +17,7 @@ public class DbUserDao implements UserDao<User, String> {
     private String password;
     private String driver;
     
-    public DbUserDao (String path, String dbUser, String password, String driver) {
+    public DbUserDao(String path, String dbUser, String password, String driver) {
         this.path = path;
         this.dbUser = dbUser;
         this.password = password;
@@ -27,6 +27,8 @@ public class DbUserDao implements UserDao<User, String> {
     @Override
     public User create(User object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
+        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
         PreparedStatement query = connection.prepareStatement(
                 "INSERT INTO User (username, password, created) VALUES (?,?,?)");
         
@@ -44,13 +46,17 @@ public class DbUserDao implements UserDao<User, String> {
     @Override
     public User read(String key) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
+        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
         PreparedStatement query = connection.prepareStatement(
                 "SELECT username, password, created FROM User WHERE username = ?");
         
         query.setString(1, key);
-        
         ResultSet result = query.executeQuery();
-        if (!result.next()) return null;
+        
+        if (!result.next()) {
+            return null;
+        }
         
         User user = new User(
                 result.getString("username"),
@@ -67,6 +73,8 @@ public class DbUserDao implements UserDao<User, String> {
     @Override
     public User update(User object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
+        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
         PreparedStatement query = connection.prepareStatement(
                 "UPDATE User SET password = ? WHERE username = ?");
         
@@ -83,6 +91,8 @@ public class DbUserDao implements UserDao<User, String> {
     @Override
     public void remove(String key) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
+        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
         PreparedStatement query = connection.prepareStatement("DELETE FROM User WHERE username = ?");
         query.setString(1, key);
         query.executeUpdate();

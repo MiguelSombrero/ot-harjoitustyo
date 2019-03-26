@@ -14,13 +14,14 @@ public class FakeCostDao implements CostDao<Cost, String> {
     @Override
     public Cost create(Cost object) throws SQLException {
         costs.putIfAbsent(object.getUser(), new ArrayList<>());
+        object.setId( costs.get(object.getUser()).size() + 1 );
         costs.get(object.getUser()).add(object);
         return object;
     }
 
     @Override
-    public void remove(String key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void remove(String key) {
+        costs.remove(key);
     }
 
     @Override

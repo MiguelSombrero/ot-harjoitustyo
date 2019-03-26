@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface UserDao<T, K> {
     
-    T create (T object) throws SQLException;
+    T create(T object) throws SQLException;
     
-    T read (K key) throws SQLException;
+    T read(K key) throws SQLException;
     
-    T update (T object) throws SQLException;
+    T update(T object) throws SQLException;
     
-    void remove (K key) throws SQLException;
+    void remove(K key) throws SQLException;
     
-    List<T> list ();
+    List<T> list();
 }

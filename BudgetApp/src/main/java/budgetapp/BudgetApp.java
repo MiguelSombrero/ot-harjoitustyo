@@ -20,7 +20,7 @@ public class BudgetApp extends Application {
     private CostController costController;
     
     @Override
-    public void init () throws Exception {
+    public void init() throws Exception {
         Properties properties = new Properties();
         properties.load(new FileInputStream("config.properties"));
 
@@ -53,7 +53,7 @@ public class BudgetApp extends Application {
         primaryStage.show();
     }
     
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         launch(BudgetApp.class, args);
     }
 }

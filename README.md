@@ -1,20 +1,24 @@
-<h1>Ohjelmistotekniikan harjoitustyö</h1>
+# Ohjelmistotekniikan harjoitustyö
 
 Tämä on HY:n *Ohjelmistotekniikka* -kurssin harjoituksia ja harjoitustyötä
 varten luotu Github repositorio. Materiaali tulee päivittymään kurssin edetessä, jos en kuole.
 **Under construction ...**
 
-<h2>Dokumentaatio</h2>
+## Dokumentaatio
 
 [Vaatimusmäärittely](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/vaatimusmaarittely.md)
 
 [Työaikakirjanpito](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/tuntikirjanpito.md)
 
-<h2>Tehtävät</h2>
+## Komentorivitoiminnot
 
-<h3>Viikko 1</h3>
+### Testaus
 
-[gitlog.txt](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
+Testit suoritetaan komennolla
 
-[komentorivi.txt](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)
+    mvn test
+
+Testikattavuusraportti luodaan komennolla
+
+    mvn test jacoco:report
 

@@ -1,8 +1,8 @@
 
 package budgetapp.dao;
 
+import budgetapp.domain.Category;
 import budgetapp.domain.Cost;
-import budgetapp.domain.User;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -21,7 +21,7 @@ public class DbCostDao implements CostDao<Cost, String> {
     private String driver;
     private HashMap<String, List<Cost>> cache;
     
-    public DbCostDao (String path, String dbUser, String password, String driver) {
+    public DbCostDao(String path, String dbUser, String password, String driver) {
         this.path = path;
         this.dbUser = dbUser;
         this.password = password;
@@ -32,11 +32,13 @@ public class DbCostDao implements CostDao<Cost, String> {
     @Override
     public Cost create(Cost object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
+        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
         PreparedStatement query = connection.prepareStatement(
                 "INSERT INTO Cost (userId, category, price, purchased) VALUES (?,?,?,?)");
         
         query.setString(1, object.getUser());
-        query.setString(2, object.getCategory());
+        query.setString(2, object.getCategory().toString());
         query.setDouble(3, object.getPrice());
         query.setString(4, object.getPurchased().toString());
         
@@ -48,8 +50,10 @@ public class DbCostDao implements CostDao<Cost, String> {
     }
 
     @Override
-    public void remove(String key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void remove(String key) {
+        if (cache.containsKey(key)) {
+            cache.remove(key);
+        }
     }
 
     @Override
@@ -57,6 +61,8 @@ public class DbCostDao implements CostDao<Cost, String> {
         if (!cache.containsKey(key)) {
             
             Connection connection = DriverManager.getConnection(path, dbUser, password);
+            connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
+            
             PreparedStatement query = connection.prepareStatement(
                     "SELECT * FROM Cost WHERE userId = ?");
         
@@ -66,13 +72,13 @@ public class DbCostDao implements CostDao<Cost, String> {
             List<Cost> costs = new ArrayList<>();
         
             while (result.next()) {
-                costs.add( new Cost(
-                                result.getString("category"),
+                costs.add(
+                        new Cost(
+                                Category.valueOf(result.getString("category").toUpperCase()),
                                 result.getDouble("price"),
                                 Date.valueOf(result.getString("purchased")).toLocalDate(),
                                 result.getString("userId")));
             }
-        
             result.close();
             query.close();
             connection.close();

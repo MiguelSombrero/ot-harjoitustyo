@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CostDao<T, K> {
     
-    T create (T object) throws SQLException;
+    T create(T object) throws SQLException;
     
-    void remove (K key) throws SQLException;
+    void remove(K key);
     
-    List<T> list (K key) throws SQLException;
+    List<T> list(K key) throws SQLException;
 }

@@ -6,5 +6,5 @@
 
 <suppressions>
     <suppress files="budgetapp.gui.ApplicationView.java" checks="[a-zA-Z0-9]*"/>
-    <suppress files="budgetapp.gui.Loginiew.java" checks="[a-zA-Z0-9]*"/>
+    <suppress files="budgetapp.gui.LoginView.java" checks="[a-zA-Z0-9]*"/>
 </suppressions>
