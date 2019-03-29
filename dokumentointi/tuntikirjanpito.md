@@ -7,3 +7,4 @@ päivä | aika | mitä tein
 18.3 | 4 | pari uutta toiminnallisuutta ja ensimmäiset yksikkötestit
 21.3 | 3 | projektin refaktorointia ja koodin siistimistä
 25.3 | 2 | Testien suunnittelua CostController luokalle
+29.3 | 4 | Testien suunnittelua DbUserDao luokalle

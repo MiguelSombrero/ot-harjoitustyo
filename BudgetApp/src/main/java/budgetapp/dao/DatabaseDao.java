@@ -21,6 +21,7 @@ public class DatabaseDao {
     
     public void createDatabase() {
         try {
+            Class.forName(driver);
             Connection connection = DriverManager.getConnection(path, user, password);
             connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
             
@@ -42,7 +43,7 @@ public class DatabaseDao {
             connection.prepareStatement(createUser).execute();
             connection.prepareStatement(createCost).execute();
             
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getLocalizedMessage());
         }
     }

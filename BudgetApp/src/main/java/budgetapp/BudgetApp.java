@@ -50,6 +50,7 @@ public class BudgetApp extends Application {
         loginView.setAppScene(appScene);
         
         primaryStage.setScene(loginScene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
     

@@ -32,8 +32,6 @@ public class DbCostDao implements CostDao<Cost, String> {
     @Override
     public Cost create(Cost object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
-        connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
-            
         PreparedStatement query = connection.prepareStatement(
                 "INSERT INTO Cost (userId, category, price, purchased) VALUES (?,?,?,?)");
         
@@ -51,6 +49,7 @@ public class DbCostDao implements CostDao<Cost, String> {
 
     @Override
     public void remove(String key) {
+        // ON DELETE CASCADE will remove Costs from database when user is deleted
         if (cache.containsKey(key)) {
             cache.remove(key);
         }
@@ -61,8 +60,6 @@ public class DbCostDao implements CostDao<Cost, String> {
         if (!cache.containsKey(key)) {
             
             Connection connection = DriverManager.getConnection(path, dbUser, password);
-            connection.prepareStatement("PRAGMA foreign_keys = ON;").execute();
-            
             PreparedStatement query = connection.prepareStatement(
                     "SELECT * FROM Cost WHERE userId = ?");
         
@@ -85,8 +82,6 @@ public class DbCostDao implements CostDao<Cost, String> {
             
             cache.put(key, costs);
         }
-        
         return cache.get(key);
     }
-    
 }

@@ -3,29 +3,28 @@ package budgetapp.domain;
 
 import budgetapp.dao.UserDao;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class UserController {
     
     private UserDao userDao;
-    private String user;
+    private User user;
     
     public UserController(UserDao userDao) {
         this.userDao = userDao;
     }
     
-    public String getUser() {
+    public User getUser() {
         return this.user;
     }
     
-    public void setUser(String user) {
-        this.user = user;
+    public void logoutUser() {
+        this.user = null;
     }
     
     public Integer createUser(String username, String password) {
         try {
             if (userDao.read(username) == null) {
-                userDao.create(new User(username, password, LocalDate.now()));
+                userDao.create(new User(username, password));
                 return 0;
             }
             return 1;
@@ -39,7 +38,7 @@ public class UserController {
         try {
             User logginIn = (User) userDao.read(username);
             if (logginIn != null && logginIn.getPassword().equals(password)) {
-                this.user = username;
+                this.user = logginIn;
                 return 0;
             }
             return 1;
@@ -49,13 +48,9 @@ public class UserController {
         }
     }
     
-    public void logoutUser() {
-        this.user = null;
-    }
-    
     public Integer removeUser() {
         try {
-            userDao.remove(user);
+            userDao.remove(user.getUsername());
             return 0;
         
         } catch (SQLException e) {
@@ -65,9 +60,8 @@ public class UserController {
     
     public Integer changePassword(String newPassword) {
         try {
-            User updateableUser = (User) userDao.read(user);
-            updateableUser.setPassword(newPassword);
-            userDao.update(updateableUser);
+            this.user.setPassword(newPassword);
+            userDao.update(this.user);
             return 0;
         
         } catch (SQLException e) {
@@ -75,5 +69,8 @@ public class UserController {
         }
     }
     
+    public boolean checkCredentials (String string) {
+        return (string.length() > 4 && string.length() < 16);
+    }
     
 }

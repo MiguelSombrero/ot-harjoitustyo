@@ -4,7 +4,6 @@ package budgetapp.domain;
 import budgetapp.dao.CostDao;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CostController {
@@ -39,43 +38,44 @@ public class CostController {
         }
     }
     
-    public double[][] sum(List<Cost> costs) {
-        double[][] money = new double[5][32];
-        
-        for (Cost cost : costs) {
-            int category = cost.getCategory().ordinal();
-            int dayofweek = cost.getPurchased().getDayOfWeek().getValue();
-            int month = cost.getPurchased().getMonthValue();
-            double price = cost.getPrice();
-                
-            money[0][dayofweek] += price;
-            money[1][month] += price;
-            money[2][category] += price;
-        }
+    public double[] sumWeekday(List<Cost> costs, double[] money) {
+        for (Cost cost : costs) { money[cost.getPurchased().getDayOfWeek().getValue()] += cost.getPrice(); }
         return money;
     }
     
-    public double[][] sumYearly(List<Cost> costs) {
-        double[][] money = new double[80][32];
-        
+    public double[] sumMonth(List<Cost> costs, double[] money) {
+        for (Cost cost : costs) { money[cost.getPurchased().getMonthValue()] += cost.getPrice(); }
+        return money;
+    }
+    
+    public double[] sumCategory(List<Cost> costs, double[] money) {
+        for (Cost cost : costs) { money[cost.getCategory().ordinal()] += cost.getPrice(); }
+        return money;
+    }
+    
+    public double[][] sumWeekdayYearly(List<Cost> costs, double[][] money) {
         for (Cost cost : costs) {
-            int category = cost.getCategory().ordinal();
-            int weekday = cost.getPurchased().getDayOfWeek().getValue();
-            int month = cost.getPurchased().getMonthValue();
-                
             int year = cost.getPurchased().getYear() - 2000;
-            int categoryYear = year + 20;
-            int weekdayYear = year + 40;
-                
-            double price = cost.getPrice();
-                
-            money[weekdayYear][weekday] += price;
-            money[year][month] += price;
-            money[categoryYear][category] += price;
-                
+            money[year][cost.getPurchased().getDayOfWeek().getValue()] += cost.getPrice();
             money[year][0] = 1;
-            money[categoryYear][0] = 1;
-            money[weekdayYear][0] = 1;
+        }
+        return money;    
+    }
+    
+    public double[][] sumMonthYearly(List<Cost> costs, double[][] money) {
+        for (Cost cost : costs) {
+            int year = cost.getPurchased().getYear() - 2000;
+            money[year][cost.getPurchased().getMonthValue()] += cost.getPrice();
+            money[year][0] = 1;
+        }
+        return money;    
+    }
+    
+    public double[][] sumCategoryYearly(List<Cost> costs, double[][] money) {
+        for (Cost cost : costs) {
+            int year = cost.getPurchased().getYear() - 2000;
+            money[year][cost.getCategory().ordinal()] += cost.getPrice();
+            money[year][money[0].length-1] = 1;
         }
         return money;    
     }

@@ -23,6 +23,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -46,13 +48,22 @@ public class ApplicationView {
     }
     
     public Scene getApplicationScene (Stage primaryStage) {
-        BorderPane layout = new BorderPane();
-        layout.getStyleClass().add("application");
+        // main window
+        TabPane application = new TabPane();
+        Tab costsTab = new Tab("Costs");
+        Tab userTab = new Tab("User");
+        application.getTabs().addAll(costsTab, userTab);
+        application.getTabs().forEach(tab -> tab.setClosable(false));
         
-        // main view on left
+        // main view on Costs tab
         
-        VBox buttonFrame = new VBox();
-        buttonFrame.getStyleClass().add("buttonframe");
+        BorderPane costsLayout = new BorderPane();
+        costsLayout.getStyleClass().add("application");
+        
+        // left Costs tab
+        
+        VBox costsButtons = new VBox();
+        costsButtons.getStyleClass().add("buttonframe");
         
         Button addCost = new Button("Add cost");
         Button weekday = new Button("Weekday");
@@ -61,32 +72,11 @@ public class ApplicationView {
         Button weekdayYearly = new Button("Weekday yearly");
         Button monthYearly = new Button("Month yearly");
         Button categoryYearly = new Button("Category yearly");
-        Button logout = new Button("Logout user");
-        Button changePassword = new Button("Change password");
-        Button removeUser = new Button("Remove user");
         
         Label summaryText = new Label("");
         Label yearlyText = new Label("");
-        Label userText = new Label("");
         
-        // password view on center
-        
-        GridPane passwordFrame = new GridPane();
-        passwordFrame.getStyleClass().add("form");
-        
-        Button changeButton = new Button("Change");
-        Label newPasswordText1 = new Label("New password:");
-        Label newPasswordText2 = new Label("New password again:");
-        PasswordField newPassword1 = new PasswordField();
-        PasswordField newPassword2 = new PasswordField();
-            
-        passwordFrame.add(newPasswordText1, 0, 0);
-        passwordFrame.add(newPassword1, 1, 0);
-        passwordFrame.add(newPasswordText2, 0, 1);
-        passwordFrame.add(newPassword2, 1, 1);
-        passwordFrame.add(changeButton, 1, 2);
-            
-        // add new event/cost view on center
+        // add new cost center on Costs tab
         
         GridPane addCostFrame = new GridPane();
         addCostFrame.getStyleClass().add("form");
@@ -98,7 +88,7 @@ public class ApplicationView {
         Label purchasedText = new Label("Purchased:");
         
         ComboBox categorySelection = new ComboBox();
-        category.getStyleClass().add("listbutton");
+        categorySelection.getStyleClass().add("listbutton");
         Arrays.stream(Category.values()).forEach(cat -> categorySelection.getItems().add(cat));
         
         ComboBox purchased = new ComboBox();
@@ -107,7 +97,7 @@ public class ApplicationView {
         
         TextField price = new TextField();
             
-        addCostFrame.add(helpText, 0, 0);
+        addCostFrame.add(helpText, 1, 0);
         addCostFrame.add(categoryText, 0, 1);
         addCostFrame.add(categorySelection, 1, 1);
         addCostFrame.add(priceText, 0, 2);
@@ -129,24 +119,27 @@ public class ApplicationView {
         confirmation.getButtonTypes().addAll(remove, cancel);
             
         addCost.setOnAction((event) -> {
-            layout.setCenter(addCostFrame);
+            costsLayout.setCenter(addCostFrame);
         });
         
         addButton.setOnAction((event1) -> {
+            if (!isNumber(price.getText().replace(",", "."))) {
+                createAlert(warning, "Oops! Price wasn't given correctly.");
+                return;
+            }
+            Double pri = Double.parseDouble(price.getText().replace(",", "."));
             Category cat = Category.valueOf(categorySelection.getValue().toString().toUpperCase());
-            Double pri = Double.valueOf(price.getText());
             LocalDate pur = LocalDate.parse(purchased.getValue().toString());
             
-            int addCostInfo = costController.addCost(cat, pri, pur, userController.getUser());
-                
+            int addCostInfo = costController.addCost(cat, pri, pur, userController.getUser().getUsername());
+            costController.emptyCostsCache(userController.getUser().getUsername());
+        
             switch (addCostInfo) {
                 case 0:
-                    information.setContentText("Cost added succesfully!");
-                    information.showAndWait();
+                    createAlert(information, "Cost added succesfully!");
                     break;
                 case 2:
-                    error.setContentText("Add cost failed. Try again later!");
-                    error.showAndWait();
+                    createAlert(error, "Add cost failed. Try again later!");
                     break;
                 default:
                     break;    
@@ -158,101 +151,204 @@ public class ApplicationView {
         });
         
         weekday.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sum(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
             
-            BarChart<String, Number> dailychart = createBarChart(
-                    "Money consumption by day of week", "Day", "Money", false);
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+                
+            double[] money = costController.sumWeekday(costs, new double[8]);
             
-            XYChart.Series data = populateData("dayofweek", money[0].clone(), 8);
-            dailychart.getData().add(data);
-            layout.setCenter(dailychart);
+            BarChart<String, Number> weekdaychart = createBarChart(
+                    "Money consumption by day of week", "Weekday", "Money", false);
+            
+            XYChart.Series data = new XYChart.Series<>();
+                
+            for (int i = 1; i < money.length; i++) {
+                data.getData().add(new XYChart.Data(DayOfWeek.of(i).toString(), money[i]));
+            }
+                
+            weekdaychart.getData().add(data);
+            costsLayout.setCenter(weekdaychart);
         });
         
         month.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sum(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+            
+            double[] money = costController.sumMonth(costs, new double[13]);
             
             BarChart<String, Number> monthlychart = createBarChart(
                     "Money consumption by month", "Month", "Money", false);
             
-            XYChart.Series data = populateData("month", money[1].clone(), 13);
+            XYChart.Series data = new XYChart.Series<>();
+               
+            for (int i = 1; i < money.length; i++) {
+                data.getData().add(new XYChart.Data(Month.of(i).toString(), money[i]));
+            }
+            
             monthlychart.getData().add(data);
-            layout.setCenter(monthlychart);
+            costsLayout.setCenter(monthlychart);
         });
         
         category.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sum(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+            
+            int categories = Category.values().length;
+            double[] money = costController.sumCategory(costs, new double[categories]);
             
             BarChart<String, Number> barchart = createBarChart(
                     "Money consumption by category", "Category", "Money", false);
             
-            XYChart.Series data = populateData("category", money[2].clone(), Category.values().length);
+            XYChart.Series data = new XYChart.Series<>();
+            
+            for (int i = 0; i < money.length; i++) {
+                data.getData().add(new XYChart.Data(Category.values()[i].toString(), money[i]));
+            }
+            
             barchart.getData().add(data);
-            layout.setCenter(barchart);
+            costsLayout.setCenter(barchart);
         });
         
         weekdayYearly.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sumYearly(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+            
+            double[][] money = costController.sumWeekdayYearly(costs, new double[40][8]);
             
             BarChart<String, Number> weekdaychart = createBarChart(
                     "Money consumption by year and weekday", "Weekday", "Money", true);
             
-            for (int i = 50; i < 70; i++) {
+            for (int i = 10; i < money.length; i++) {
                 if (money[i][0] == 0) continue;
                 
-                XYChart.Series data = populateData("dayofweek", money[i].clone(), 8);
-                data.setName(String.valueOf(i + 1960));
+                XYChart.Series data = new XYChart.Series<>();
+                data.setName(String.valueOf(i + 2000));
+                
+                for (int j = 1; j < money[0].length; j++) {
+                    data.getData().add(new XYChart.Data(DayOfWeek.of(j).toString(), money[i][j]));
+                }
                 weekdaychart.getData().add(data);
             }
             
-            layout.setCenter(weekdaychart);
+            costsLayout.setCenter(weekdaychart);
         });
         
         monthYearly.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sumYearly(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+            
+            double[][] money = costController.sumMonthYearly(costs, new double[40][13]);
             
             BarChart<String, Number> yearlychart = createBarChart(
                     "Money consumption by year and month", "Month", "Money", true);
             
-            for (int i = 10; i < 30; i++) {
+            for (int i = 10; i < money.length; i++) {
                 if (money[i][0] == 0) continue;
                 
-                XYChart.Series data = populateData("month", money[i].clone(), 13);
+                XYChart.Series data = new XYChart.Series<>();
                 data.setName(String.valueOf(i + 2000));
+                
+                for (int j = 1; j < money[0].length; j++) {
+                    data.getData().add(new XYChart.Data(Month.of(j).toString(), money[i][j]));
+                }
                 yearlychart.getData().add(data);
             }
             
-            layout.setCenter(yearlychart);
+            costsLayout.setCenter(yearlychart);
         });
         
         categoryYearly.setOnAction((event) -> {
-            List<Cost> costs = costController.getCosts(userController.getUser());
-            double[][] money = costController.sumYearly(costs);
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            
+            if (costs == null) {
+                createAlert(information, "You haven't added any costs yet");
+                return;
+            }
+            
+            int categories = Category.values().length;
+            double[][] money = costController.sumCategoryYearly(costs, new double[40][categories+1]);
             
             BarChart<String, Number> yearlychart = createBarChart(
                     "Money consumption by year and category", "Category", "Money", true);
             
-            for (int i = 30; i < 50; i++) {
-                if (money[i][0] == 0) continue;
+            for (int i = 10; i < money.length; i++) {
+                if (money[i][categories] == 0) continue;
                 
-                XYChart.Series data = populateData("category", money[i].clone(), Category.values().length);
-                data.setName(String.valueOf(i + 1980));
+                XYChart.Series data = new XYChart.Series<>();
+                data.setName(String.valueOf(i + 2000));
+                
+                for (int j = 0; j < categories; j++) {
+                    data.getData().add(new XYChart.Data(Category.values()[j].toString(), money[i][j]));
+                }
                 yearlychart.getData().add(data);
             }
+            costsLayout.setCenter(yearlychart);
+        });
+        
+        // main view on User tab
+        
+        BorderPane userLayout = new BorderPane();
+        userLayout.getStyleClass().add("application");
+        
+        // left User tab
+        
+        VBox userButtons = new VBox();
+        userButtons.getStyleClass().add("buttonframe");
+        
+        Button logout = new Button("Logout user");
+        Button changePassword = new Button("Change password");
+        Button removeUser = new Button("Remove user");
+        
+        // info view on center User tab
+        
+        Label infoText = new Label("");
+        
+        // password view on center User tab
+        
+        GridPane passwordFrame = new GridPane();
+        passwordFrame.getStyleClass().add("form");
+        
+        Button changeButton = new Button("Change");
+        Label newPasswordText1 = new Label("New password:");
+        Label newPasswordText2 = new Label("New password again:");
+        PasswordField newPassword1 = new PasswordField();
+        PasswordField newPassword2 = new PasswordField();
             
-            layout.setCenter(yearlychart);
+        passwordFrame.add(newPasswordText1, 0, 0);
+        passwordFrame.add(newPassword1, 0, 1);
+        passwordFrame.add(newPasswordText2, 0, 2);
+        passwordFrame.add(newPassword2, 0, 3);
+        passwordFrame.add(changeButton, 0, 4);
+        
+        userTab.setOnSelectionChanged((event) -> {
+            infoText.setText(userController.getUser().toString());
         });
         
         logout.setOnAction((event) -> {
-            logout(primaryStage, layout, addCostFrame);
+            logout(primaryStage, costsLayout, addCostFrame);
         });
         
         changePassword.setOnAction((event) -> {
-            layout.setCenter(passwordFrame);
+            userLayout.setCenter(passwordFrame);
         });
         
         changeButton.setOnAction((event) -> {
@@ -260,7 +356,7 @@ public class ApplicationView {
                 warning.setContentText("New password typed wrong!");
                 warning.showAndWait();
             }
-            else if (!checkSyntax(newPassword1.getText())) {
+            else if (!userController.checkCredentials(newPassword1.getText())) {
                 warning.setContentText("Username and password must be 5-15 caharacters!");
                 warning.showAndWait();
             }
@@ -273,7 +369,7 @@ public class ApplicationView {
                         information.showAndWait();
                         break;
                     case 2:
-                        error.setContentText("Changing password failed. Try again later!");
+                        error.setContentText("Change password failed. Try again later!");
                         error.showAndWait();
                         break;
                     default:
@@ -286,20 +382,21 @@ public class ApplicationView {
         });
         
         removeUser.setOnAction((event) -> {
-            confirmation.setContentText("Are you sure you want to remove user " + userController.getUser() + "?\n"
+            confirmation.setContentText("Are you sure you want to remove user "
+                    + userController.getUser() + "?\n"
                     + "This will remove user and all it's data.");
             
             Optional<ButtonType> result = confirmation.showAndWait();
             
             if (result.get() == remove) {
-                costController.emptyCostsCache(userController.getUser());
+                costController.emptyCostsCache(userController.getUser().getUsername());
                 int removeUserInfo = userController.removeUser();
                 
                 switch (removeUserInfo) {
                     case 0:
                         information.setContentText("User removed succesfully!");
                         information.showAndWait();
-                        logout(primaryStage, layout, addCostFrame);
+                        logout(primaryStage, costsLayout, addCostFrame);
                         break;
                     case 2:
                         error.setContentText("Remove user failed. Try again later!");
@@ -311,27 +408,29 @@ public class ApplicationView {
             }
         });
         
-        buttonFrame.getChildren().addAll(
-                addCost, summaryText, weekday, month, category, yearlyText, weekdayYearly, monthYearly,
-                categoryYearly, userText, logout, changePassword, removeUser);
+        userButtons.getChildren().addAll(logout, changePassword, removeUser);
+        costsButtons.getChildren().addAll(addCost, summaryText, weekday, month,
+                category, yearlyText, weekdayYearly, monthYearly, categoryYearly);
         
-        buttonFrame.getChildren().forEach(button -> button.getStyleClass().add("listbutton"));
+        costsButtons.getChildren().forEach(button -> button.getStyleClass().add("listbutton"));
+        userButtons.getChildren().forEach(button -> button.getStyleClass().add("listbutton"));
         
-        layout.setLeft(buttonFrame);
-        layout.setCenter(addCostFrame);
+        costsTab.setContent(costsLayout);
+        userTab.setContent(userLayout);
         
-        Scene scene = new Scene(layout);
+        costsLayout.setLeft(costsButtons);
+        costsLayout.setCenter(addCostFrame);
+        userLayout.setLeft(userButtons);
+        userLayout.setTop(infoText);
+        
+        Scene scene = new Scene(application);
         scene.getStylesheets().add("styles.css");
         
         return scene;
     }
     
-    public boolean checkSyntax (String string) {
-        return (string.length() > 4 && string.length() < 16);
-    }
-    
     public void logout (Stage primaryStage, BorderPane layout, GridPane addCostFrame) {
-        costController.emptyCostsCache(userController.getUser());
+        costController.emptyCostsCache(userController.getUser().getUsername());
         userController.logoutUser();
         layout.setCenter(addCostFrame);
         primaryStage.setScene(loginScene);
@@ -351,22 +450,19 @@ public class ApplicationView {
         return barchart;
     }
     
-    public XYChart.Series populateData (String condition, double[] costs, int end) {
-        XYChart.Series data = new XYChart.Series();
-        
-        for (int i = 1; i < end; i++) {
+    public boolean isNumber (String number) {
+        try {
+            Double.parseDouble(number);
             
-            if (condition.equals("dayofweek")) {
-                data.getData().add(new XYChart.Data(DayOfWeek.of(i).toString(), costs[i]));
-                
-            } else if (condition.equals("month")) {
-                data.getData().add(new XYChart.Data(Month.of(i).toString(), costs[i]));
-                
-            } else if (condition.equals("category")) {
-                data.getData().add(new XYChart.Data(Category.values()[i].toString(), costs[i]));
-            }
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
         }
-        return data;  
+        return true;
+    }
+    
+    public void createAlert(Alert type, String text) {
+        type.setContentText(text);
+        type.showAndWait();
     }
     
 }

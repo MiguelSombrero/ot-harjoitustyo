@@ -2,7 +2,7 @@
     -fx-padding: 20;
     -fx-vgap: 10;
     -fx-hgap: 10;
-    -fx-alignment: CENTER;
+    -fx-alignment: TOP_CENTER;
 }
 .login {
     -fx-padding: 20;

@@ -9,6 +9,12 @@ public class User {
     private String password;
     private LocalDate created;
     
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.created = LocalDate.now();
+    }
+    
     public User(String username, String password, LocalDate created) {
         this.username = username;
         this.password = password;
@@ -38,4 +44,10 @@ public class User {
     public void setCreated(LocalDate created) {
         this.created = created;
     }
+    
+    public String toString () {
+        return "Username " + this.username +", created " + this.created;
+    }
+    
+    
 }

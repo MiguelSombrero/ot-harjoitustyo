@@ -56,7 +56,7 @@ public class UserControllerTest {
     @Test
     public void canLoginWithRightPassword () {
         userController.loginUser("Miika", "Salasana");
-        assertEquals("Miika", userController.getUser());
+        assertEquals("Miika", userController.getUser().getUsername());
     }
     
     @Test
@@ -72,13 +72,6 @@ public class UserControllerTest {
         userController.removeUser();
         User user = userDao.read("Miika");
         assertEquals(null, user);
-    }
-    
-    @Test
-    public void cannotRemoveUserNotLoggedIn () throws SQLException {
-        userController.removeUser();
-        User user = userDao.read("Miika");
-        assertEquals("Miika", user.getUsername());
     }
     
     @Test

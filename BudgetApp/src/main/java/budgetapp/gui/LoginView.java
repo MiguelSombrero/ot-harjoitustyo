@@ -42,7 +42,7 @@ public class LoginView {
         Button createUser = new Button("Create");
         Button changeView = new Button("New user ?");
         
-        Label helpText = new Label("Login:");
+        Label helpText = new Label("LOGIN");
         Label usernameText = new Label("Username:");
         Label passwordText = new Label("Password:");
         
@@ -64,12 +64,10 @@ public class LoginView {
                     primaryStage.setScene(appScene);
                     break;
                 case 1:
-                    warning.setContentText("Wrong username or password!");
-                    warning.showAndWait();
+                    createAlert(warning, "Wrong username or password!");
                     break;
                 case 2:
-                    error.setContentText("Login failed. Please try again later!");
-                    error.showAndWait();
+                    createAlert(error, "Login failed. Please try again later!");
                     break;
                 default:
                     break;
@@ -83,9 +81,8 @@ public class LoginView {
             String user = username.getText();
             String passwd = password.getText();
             
-            if (!checkSyntax(user) || !checkSyntax(passwd)) {
-                warning.setContentText("Username and password must be 5-15 caharacters!");
-                warning.showAndWait();
+            if (!userController.checkCredentials(user) || !userController.checkCredentials(passwd)) {
+                createAlert(warning, "Username and password must be 5-15 caharacters!");
                 username.clear();
                 password.clear();
                 return;
@@ -95,16 +92,13 @@ public class LoginView {
             
             switch (createUserInfo) {
                 case 0:
-                    information.setContentText("New user '" + user + "' created succesfully!");
-                    information.showAndWait();
+                    createAlert(information, "New user '" + user + "' created succesfully!");
                     break;
                 case 1:
-                    warning.setContentText("Username taken - select another one!");
-                    warning.showAndWait();
+                    createAlert(warning, "Username taken - select another one!");
                     break;
                 case 2:
-                    error.setContentText("Creating an account failed. Please try again later!");
-                    error.showAndWait();
+                    createAlert(error, "Creating an account failed. Please try again later!");
                     break;
                 default:
                     break;
@@ -116,7 +110,7 @@ public class LoginView {
         });
         
         changeView.setOnAction((event) -> {
-            if (helpText.getText().equals("Login:")) {
+            if (helpText.getText().equals("LOGIN")) {
                 changeToCreateView(helpText, changeView, frame, login, createUser);
             }
             else {
@@ -140,21 +134,22 @@ public class LoginView {
         return scene;
     }
     
-    public boolean checkSyntax (String string) {
-        return (string.length() > 4 && string.length() < 16);
-    }
-    
     public void changeToCreateView (Label helpText, Button changeView, GridPane frame, Button login, Button createUser) {
-        helpText.setText("Create user:");
+        helpText.setText("CREATE USER");
         changeView.setText("Login");
         frame.getChildren().remove(login);
         frame.add(createUser, 1, 3);
     }
     
     public void changeToLoginView (Label helpText, Button changeView, GridPane frame, Button login, Button createUser) {
-        helpText.setText("Login:");
+        helpText.setText("LOGIN");
         changeView.setText("New user ?");
         frame.getChildren().remove(createUser);
         frame.add(login, 1, 3);
+    }
+    
+    public void createAlert(Alert type, String text) {
+        type.setContentText(text);
+        type.showAndWait();
     }
 }
