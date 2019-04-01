@@ -1,13 +1,11 @@
 
-package budgetapp;
+package budgetapp.gui;
 
 import budgetapp.dao.DatabaseDao;
 import budgetapp.dao.DbCostDao;
 import budgetapp.dao.DbUserDao;
 import budgetapp.domain.CostController;
 import budgetapp.domain.UserController;
-import budgetapp.gui.ApplicationView;
-import budgetapp.gui.LoginView;
 import java.io.FileInputStream;
 import java.util.Properties;
 import javafx.application.Application;

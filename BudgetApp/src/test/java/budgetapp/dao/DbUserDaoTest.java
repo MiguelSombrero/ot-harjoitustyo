@@ -40,6 +40,9 @@ public class DbUserDaoTest {
         database.createDatabase();
         
         dao = new DbUserDao(path, user, password, driver);
+        
+        // tässä pitäisi tallentaa ilman että käyttää dao:n omaa metodia!
+        
         dao.create(new User("Miika", "Salasana", Date.valueOf("2019-02-20").toLocalDate()));
     }
     

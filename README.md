@@ -8,7 +8,10 @@ varten luotu Github repositorio. Materiaali tulee päivittymään kurssin edetes
 
 [Vaatimusmäärittely](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/vaatimusmaarittely.md)
 
+[Arkkitehtuurikuvaus](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/arkkitehtuuri.md)
+
 [Työaikakirjanpito](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/tuntikirjanpito.md)
+
 
 ## Komentorivitoiminnot
 

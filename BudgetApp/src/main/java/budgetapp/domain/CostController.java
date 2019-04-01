@@ -39,17 +39,23 @@ public class CostController {
     }
     
     public double[] sumWeekday(List<Cost> costs, double[] money) {
-        for (Cost cost : costs) { money[cost.getPurchased().getDayOfWeek().getValue()] += cost.getPrice(); }
+        for (Cost cost : costs) {
+            money[cost.getPurchased().getDayOfWeek().getValue()] += cost.getPrice(); 
+        }
         return money;
     }
     
     public double[] sumMonth(List<Cost> costs, double[] money) {
-        for (Cost cost : costs) { money[cost.getPurchased().getMonthValue()] += cost.getPrice(); }
+        for (Cost cost : costs) {
+            money[cost.getPurchased().getMonthValue()] += cost.getPrice();
+        }
         return money;
     }
     
     public double[] sumCategory(List<Cost> costs, double[] money) {
-        for (Cost cost : costs) { money[cost.getCategory().ordinal()] += cost.getPrice(); }
+        for (Cost cost : costs) {
+            money[cost.getCategory().ordinal()] += cost.getPrice();
+        }
         return money;
     }
     
@@ -75,7 +81,7 @@ public class CostController {
         for (Cost cost : costs) {
             int year = cost.getPurchased().getYear() - 2000;
             money[year][cost.getCategory().ordinal()] += cost.getPrice();
-            money[year][money[0].length-1] = 1;
+            money[year][money[0].length - 1] = 1;
         }
         return money;    
     }

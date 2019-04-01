@@ -45,8 +45,8 @@ public class User {
         this.created = created;
     }
     
-    public String toString () {
-        return "Username " + this.username +", created " + this.created;
+    public String toString() {
+        return "Username " + this.username + ", created " + this.created;
     }
     
     

@@ -69,7 +69,7 @@ public class UserController {
         }
     }
     
-    public boolean checkCredentials (String string) {
+    public boolean checkCredentials(String string) {
         return (string.length() > 4 && string.length() < 16);
     }
     
