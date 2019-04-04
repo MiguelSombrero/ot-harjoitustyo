@@ -3,7 +3,7 @@ package budgetapp.domain;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,8 +18,7 @@ public class CostControllerTest {
         this.costDao = new FakeCostDao();
         this.costController = new CostController(costDao);
         
-        costController.addCost(Category.CAFE, 6.7, Date.valueOf("2019-03-20").toLocalDate(), "Miika");
-        costController.addCost(Category.CLOTHES, 56.7, Date.valueOf("2018-03-21").toLocalDate(), "Jukka");
+        costController.addCost(Category.CAFE, 26.7, Date.valueOf("2019-03-20").toLocalDate(), "Miika");
         
     }
     
@@ -46,10 +45,7 @@ public class CostControllerTest {
     
     @Test
     public void addCostSavesPriceRight() throws SQLException {
-        Double price = costDao.list("Miika").get(0).getPrice();
-        
-        // miksi ei toimi?
-        //assertEquals(26.7, price);
+        assertEquals(26.7, costDao.list("Miika").get(0).getPrice(), 0.01);
     }
     
     @Test
@@ -59,22 +55,33 @@ public class CostControllerTest {
     
     @Test
     public void addCostSavesUserRight() throws SQLException {
-        
+        assertEquals("Miika", costDao.list("Miika").get(0).getUser());
     }
     
     @Test
     public void emptyCacheWorks() throws SQLException {
+        costController.emptyCostsCache("Miika");
+        assertTrue(costDao.list("Miika") == null);
+    }
+    
+    @Test
+    public void getCostsFromDatabaseNotNull() throws SQLException {
         
     }
     
     @Test
-    public void fedsCostsFromDatabase() throws SQLException {
+    public void getCostsFromDatabaseNull() throws SQLException {
         
     }
     
     @Test
     public void sumsRightCostsByWeekday() throws SQLException {
+        costController.addCost(Category.CAFE, 6.99, Date.valueOf("2019-04-01").toLocalDate(), "Jukka");
+        costController.addCost(Category.CLOTHES, 56.89, Date.valueOf("2019-03-25").toLocalDate(), "Jukka");
+        costController.addCost(Category.ALCOHOL, 12.99, Date.valueOf("2019-03-26").toLocalDate(), "Jukka");
         
+        List<Cost> costs = costDao.list("Jukka");
+        assertEquals(63.88, costController.sumWeekday(costs, new double[8])[1], 0.01);
     }
     
     @Test

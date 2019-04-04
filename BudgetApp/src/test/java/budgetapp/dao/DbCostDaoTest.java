@@ -1,7 +1,8 @@
 
 package budgetapp.dao;
 
-import budgetapp.domain.User;
+import budgetapp.domain.Category;
+import budgetapp.domain.Cost;
 import java.io.FileInputStream;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-public class DbUserDaoTest {
+public class DbCostDaoTest {
     @Rule
     public TemporaryFolder temp = new TemporaryFolder();
     
@@ -24,7 +25,7 @@ public class DbUserDaoTest {
     String password;
     String driver;
     
-    DbUserDao dao;
+    DbCostDao dao;
     
     @Before
     public void setUp() throws Exception {
@@ -39,38 +40,27 @@ public class DbUserDaoTest {
         DatabaseDao database = new DatabaseDao(path, user, password, driver);
         database.createDatabase();
         
-        dao = new DbUserDao(path, user, password, driver);
-        dao.create(new User("Miika", "Salasana", Date.valueOf("2019-02-20").toLocalDate()));
+        dao = new DbCostDao(path, user, password, driver);
+        
+        dao.create(new Cost(1, Category.ALCOHOL, 12.90, Date.valueOf("2019-04-05").toLocalDate(), "Miika"));
+        dao.create(new Cost(1, Category.EDUCATION, 54.90, Date.valueOf("2019-03-29").toLocalDate(), "Miika"));
+        dao.create(new Cost(1, Category.SUPLEMENTS, 10.99, Date.valueOf("2019-02-25").toLocalDate(), "Miika"));
+        dao.create(new Cost(1, Category.ALCOHOL, 1.90, Date.valueOf("2018-04-07").toLocalDate(), "Jukka"));
+        dao.create(new Cost(1, Category.COSMETICS, 34.0, Date.valueOf("2019-02-05").toLocalDate(), "Jukka"));
     }
     
     @Test
-    public void readUserWorks() throws SQLException {
-        assertTrue(dao.read("Miika") != null);
+    public void readCostWorks() throws SQLException {
+        assertTrue(dao.list("Miika") != null);
     }
     
     @Test
-    public void usernameSavedRight() throws SQLException {
-        assertEquals("Miika", dao.read("Miika").getUsername());
+    public void savesMoreThanOneCost() throws SQLException {
+        assertEquals(3, dao.list("Miika").size());
     }
     
-    @Test
-    public void passwordSavedRight() throws SQLException {
-        assertEquals("Salasana", dao.read("Miika").getPassword());
-    }
-    
-    @Test
-    public void createdSavedRight() throws SQLException {
-        assertEquals(Date.valueOf("2019-02-20").toLocalDate(), dao.read("Miika").getCreated());
-    }
-    
-    @Test
-    public void readReturnsNullIfNotFound() throws SQLException {
-        assertTrue(dao.read("EiKukaan") == null);
-    }
-    
-    
-    // TÄHÄN UPDATE, REMOVE, LIST METODIEN TESTAUSTA
-    
+            
+    // tähän remove testit
     
     @After
     public void tearDown() {

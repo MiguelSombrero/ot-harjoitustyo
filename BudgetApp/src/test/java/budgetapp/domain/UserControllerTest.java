@@ -81,5 +81,15 @@ public class UserControllerTest {
         assertEquals("ToinenSalasana", userDao.read("Miika").getPassword());
     }
     
+    @Test
+    public void checkCredentialsCorrectly() {
+        assertTrue(userController.checkCredentials("viisi"));
+        assertTrue(userController.checkCredentials("viisitoistamerk"));
+    }
     
+    @Test
+    public void checkCredentialsFailsCorrectly() {
+        assertFalse(userController.checkCredentials("viis"));
+        assertFalse(userController.checkCredentials("viisitoistamerkk"));
+    }
 }

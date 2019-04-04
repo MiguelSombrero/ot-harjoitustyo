@@ -8,3 +8,5 @@ päivä | aika | mitä tein
 21.3 | 3 | projektin refaktorointia ja koodin siistimistä
 25.3 | 2 | Testien suunnittelua CostController luokalle
 29.3 | 4 | Testien suunnittelua DbUserDao luokalle
+1.4 | 3 | Pakkauskaavion suunnittelu ja dokumenttien täydennystä
+4.4 | 3 | Lisää testejä mm. DbCostDao luokalle
