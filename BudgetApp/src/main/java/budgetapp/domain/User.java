@@ -1,7 +1,9 @@
 
 package budgetapp.domain;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class User {
     
@@ -46,7 +48,8 @@ public class User {
     }
     
     public String toString() {
-        return "Username " + this.username + ", created " + this.created;
+        return "Username " + this.username + ", created "
+                + this.created.format(DateTimeFormatter.ofPattern("dd.MM.YYYY"));
     }
     
     

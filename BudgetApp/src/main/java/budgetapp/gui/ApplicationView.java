@@ -8,9 +8,12 @@ import budgetapp.domain.UserController;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -22,12 +25,15 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -55,17 +61,25 @@ public class ApplicationView {
         application.getTabs().addAll(costsTab, userTab);
         application.getTabs().forEach(tab -> tab.setClosable(false));
         
+        // some error windows to show when something bad/good happens
+        
+        Alert error = new Alert(Alert.AlertType.ERROR);
+        Alert warning = new Alert(Alert.AlertType.WARNING);
+        Alert information = new Alert(Alert.AlertType.INFORMATION);
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "", new ButtonType("Remove", ButtonData.APPLY), new ButtonType("Cancel", ButtonData.CANCEL_CLOSE));
+        
         // main view on Costs tab
         
         BorderPane costsLayout = new BorderPane();
         costsLayout.getStyleClass().add("application");
         
-        // left Costs tab
+        // left view on Costs tab
         
         VBox costsButtons = new VBox();
         costsButtons.getStyleClass().add("buttonframe");
         
         Button addCost = new Button("Add cost");
+        Button viewCosts = new Button("View costs");
         Button weekday = new Button("Weekday");
         Button month = new Button("Month");
         Button category = new Button("Category");
@@ -76,20 +90,21 @@ public class ApplicationView {
         Label summaryText = new Label("");
         Label yearlyText = new Label("");
         
-        // add new cost center on Costs tab
+        // add new cost view on center Costs tab
         
         GridPane addCostFrame = new GridPane();
         addCostFrame.getStyleClass().add("form");
         
         Button addButton = new Button("Add");
         Label helpText = new Label("ADD NEW COST");
+        helpText.setId("heading");
         Label categoryText = new Label("Category:");
         Label priceText = new Label("Price:");
         Label purchasedText = new Label("Purchased:");
         
         ComboBox categorySelection = new ComboBox();
         categorySelection.getStyleClass().add("listbutton");
-        Arrays.stream(Category.values()).forEach(cat -> categorySelection.getItems().add(cat));
+        categorySelection.setItems(FXCollections.observableArrayList(Category.values()));
         
         ComboBox purchased = new ComboBox();
         purchased.getStyleClass().add("listbutton");
@@ -106,22 +121,61 @@ public class ApplicationView {
         addCostFrame.add(purchased, 1, 3);
         addCostFrame.add(addButton, 1, 4);
         
-        // some error windows to show when something bad/good happens
+        // view costs view on center Costs tab
         
-        Alert error = new Alert(Alert.AlertType.ERROR);
-        Alert warning = new Alert(Alert.AlertType.WARNING);
-        Alert information = new Alert(Alert.AlertType.INFORMATION);
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.getButtonTypes().clear();
+        ListView<Cost> costList = new ListView<>();
         
-        ButtonType remove = new ButtonType("Remove");
-        ButtonType cancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
-        confirmation.getButtonTypes().addAll(remove, cancel);
+        // button listeners for Cost tab
+        
+        costList.setCellFactory(lv -> new ListCell<Cost>() {
+            @Override
+            public void updateItem(Cost cost, boolean empty) {
+                super.updateItem(cost, empty);
+                setText(empty ? null : cost.toString());
+            }
+        });
+        
+        // TÄMÄ METODI KAIPAA VIILAUSTA: POISTON JÄLKEEN OLISI HYVÄ PÄIVITTÄÄ LISTVIEW
+        // EN SAA PÄIVITYSTÄ TOIMIMAAN, ILMAN ETTÄ TÖKKÄÄ INDEX OUT OF BOUNDS HERJAAN
+        
+        costList.getSelectionModel().selectedItemProperty().addListener(
+                (ObservableValue<? extends Cost> observable, Cost oldValue, Cost newValue) -> {
+            
+            if (newValue == null) return;
+            
+            Optional<ButtonType> result = createAlert(confirmation,
+                    "Are you sure you want to remove cost: \n" + newValue.toString());
+            
+            if (result.get().getButtonData().equals(ButtonData.APPLY)) {
+                
+                int removeInfo = costController.removeCost(newValue.getId());
+                costController.emptyCostsCache(userController.getUser().getUsername());
+                
+                switch (removeInfo) {
+                    case 0:
+                        createAlert(information, "Cost removed succesfully!");
+                        break;
+                    case 2:
+                        createAlert(error, "Something went wrong! Try again later.");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
             
         addCost.setOnAction((event) -> {
             costsLayout.setCenter(addCostFrame);
         });
         
+        viewCosts.setOnAction((event) -> {
+            List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
+            ObservableList<Cost> list = FXCollections.observableArrayList(costs);
+            costList.getItems().clear();
+            costList.setItems(list);
+            costsLayout.setCenter(costList);
+        });
+               
         addButton.setOnAction((event1) -> {
             if (!isNumber(price.getText().replace(",", "."))) {
                 createAlert(warning, "Oops! Price wasn't given correctly.");
@@ -152,11 +206,6 @@ public class ApplicationView {
         
         weekday.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
-            
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
                 
             double[] money = costController.sumWeekday(costs, new double[8]);
             
@@ -176,11 +225,6 @@ public class ApplicationView {
         month.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
             
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
-            
             double[] money = costController.sumMonth(costs, new double[13]);
             
             BarChart<String, Number> monthlychart = createBarChart(
@@ -198,11 +242,6 @@ public class ApplicationView {
         
         category.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
-            
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
             
             int categories = Category.values().length;
             double[] money = costController.sumCategory(costs, new double[categories]);
@@ -222,11 +261,6 @@ public class ApplicationView {
         
         weekdayYearly.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
-            
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
             
             double[][] money = costController.sumWeekdayYearly(costs, new double[40][8]);
             
@@ -251,11 +285,6 @@ public class ApplicationView {
         monthYearly.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
             
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
-            
             double[][] money = costController.sumMonthYearly(costs, new double[40][13]);
             
             BarChart<String, Number> yearlychart = createBarChart(
@@ -278,11 +307,6 @@ public class ApplicationView {
         
         categoryYearly.setOnAction((event) -> {
             List<Cost> costs = costController.getCosts(userController.getUser().getUsername());
-            
-            if (costs == null) {
-                createAlert(information, "You haven't added any costs yet");
-                return;
-            }
             
             int categories = Category.values().length;
             double[][] money = costController.sumCategoryYearly(costs, new double[40][categories+1]);
@@ -318,9 +342,12 @@ public class ApplicationView {
         Button changePassword = new Button("Change password");
         Button removeUser = new Button("Remove user");
         
-        // info view on center User tab
+        // info view on top User tab
         
+        HBox infoPane = new HBox();
+        infoPane.setAlignment(Pos.CENTER);
         Label infoText = new Label("");
+        infoPane.getChildren().add(infoText);
         
         // password view on center User tab
         
@@ -344,7 +371,7 @@ public class ApplicationView {
         });
         
         logout.setOnAction((event) -> {
-            logout(primaryStage, costsLayout, addCostFrame);
+            logout(primaryStage, costsLayout, addCostFrame, infoText);
         });
         
         changePassword.setOnAction((event) -> {
@@ -356,12 +383,12 @@ public class ApplicationView {
                 warning.setContentText("New password typed wrong!");
                 warning.showAndWait();
             }
-            else if (!userController.checkCredentials(newPassword1.getText())) {
+            else if (!userController.checkCredentials(newPassword1.getText().trim())) {
                 warning.setContentText("Username and password must be 5-15 caharacters!");
                 warning.showAndWait();
             }
             else {
-                int changeInfo = userController.changePassword(newPassword1.getText());
+                int changeInfo = userController.changePassword(newPassword1.getText().trim());
                     
                 switch (changeInfo) {
                     case 0:
@@ -382,25 +409,22 @@ public class ApplicationView {
         });
         
         removeUser.setOnAction((event) -> {
-            confirmation.setContentText("Are you sure you want to remove user "
-                    + userController.getUser() + "?\n"
-                    + "This will remove user and all it's data.");
+            Optional<ButtonType> result = createAlert(confirmation,
+                    "Are you sure you want to remove user " + userController.getUser().getUsername() + "?\n"
+                            + "This will remove user and all it's data.");
             
-            Optional<ButtonType> result = confirmation.showAndWait();
-            
-            if (result.get() == remove) {
+            if (result.get().getButtonData().equals(ButtonData.APPLY)) {
+                
                 costController.emptyCostsCache(userController.getUser().getUsername());
                 int removeUserInfo = userController.removeUser();
                 
                 switch (removeUserInfo) {
                     case 0:
-                        information.setContentText("User removed succesfully!");
-                        information.showAndWait();
-                        logout(primaryStage, costsLayout, addCostFrame);
+                        createAlert(information, "User removed succesfully!");
+                        logout(primaryStage, costsLayout, addCostFrame, infoText);
                         break;
                     case 2:
-                        error.setContentText("Remove user failed. Try again later!");
-                        error.showAndWait();
+                        createAlert(error, "Remove user failed. Try again later!");
                         break;
                     default:
                         break;
@@ -409,7 +433,7 @@ public class ApplicationView {
         });
         
         userButtons.getChildren().addAll(logout, changePassword, removeUser);
-        costsButtons.getChildren().addAll(addCost, summaryText, weekday, month,
+        costsButtons.getChildren().addAll(addCost, viewCosts, summaryText, weekday, month,
                 category, yearlyText, weekdayYearly, monthYearly, categoryYearly);
         
         costsButtons.getChildren().forEach(button -> button.getStyleClass().add("listbutton"));
@@ -421,7 +445,7 @@ public class ApplicationView {
         costsLayout.setLeft(costsButtons);
         costsLayout.setCenter(addCostFrame);
         userLayout.setLeft(userButtons);
-        userLayout.setTop(infoText);
+        userLayout.setTop(infoPane);
         
         Scene scene = new Scene(application);
         scene.getStylesheets().add("styles.css");
@@ -429,10 +453,11 @@ public class ApplicationView {
         return scene;
     }
     
-    public void logout (Stage primaryStage, BorderPane layout, GridPane addCostFrame) {
+    public void logout (Stage primaryStage, BorderPane layout, GridPane addCostFrame, Label infoText) {
         costController.emptyCostsCache(userController.getUser().getUsername());
         userController.logoutUser();
         layout.setCenter(addCostFrame);
+        infoText.setText("");
         primaryStage.setScene(loginScene);
     }
     
@@ -460,9 +485,9 @@ public class ApplicationView {
         return true;
     }
     
-    public void createAlert(Alert type, String text) {
+    public Optional<ButtonType> createAlert(Alert type, String text) {
         type.setContentText(text);
-        type.showAndWait();
+        return type.showAndWait();
     }
     
 }

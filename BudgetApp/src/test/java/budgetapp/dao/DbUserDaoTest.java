@@ -68,9 +68,20 @@ public class DbUserDaoTest {
         assertTrue(dao.read("EiKukaan") == null);
     }
     
+    @Test
+    public void updateUserWorks() throws SQLException {
+        User newUser = new User("Miika", "UusiSalasana", Date.valueOf("2019-02-20").toLocalDate());
+        dao.update(newUser);
+        assertEquals("UusiSalasana", dao.read("Miika").getPassword());
+    }
+    // tähän voisi olla hyvä myös testi, ettei UPDATE tee uutta käyttäjää
     
-    // TÄHÄN UPDATE, REMOVE, LIST METODIEN TESTAUSTA
-    
+    @Test
+    public void removeUserDeletesUser() throws SQLException {
+        dao.remove("Miika");
+        assertEquals(null, dao.read("Miika"));
+    }
+    // tähän voisi olla hyvä testi, katsoa että käyttäjän poisto poistaa myös kaikki datan
     
     @After
     public void tearDown() {

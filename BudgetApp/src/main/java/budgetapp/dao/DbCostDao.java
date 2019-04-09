@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DbCostDao implements CostDao<Cost, String> {
+public class DbCostDao implements CostDao<Cost, Integer> {
 
     private String path;
     private String dbUser;
@@ -48,7 +48,18 @@ public class DbCostDao implements CostDao<Cost, String> {
     }
 
     @Override
-    public void remove(String key) {
+    public void remove (Integer id) throws SQLException {
+        Connection connection = DriverManager.getConnection(path, dbUser, password);
+        PreparedStatement query = connection.prepareStatement("DELETE FROM Cost WHERE id = ?");
+        query.setInt(1, id);
+        
+        query.executeUpdate();
+        query.close();
+        connection.close();
+    }
+    
+    @Override
+    public void removeByUser(String key) {
         // ON DELETE CASCADE will remove Costs from database when user is deleted
         if (cache.containsKey(key)) {
             cache.remove(key);
@@ -56,12 +67,12 @@ public class DbCostDao implements CostDao<Cost, String> {
     }
 
     @Override
-    public List<Cost> list(String key) throws SQLException {
+    public List<Cost> listByUser(String key) throws SQLException {
         if (!cache.containsKey(key)) {
             
             Connection connection = DriverManager.getConnection(path, dbUser, password);
             PreparedStatement query = connection.prepareStatement(
-                    "SELECT * FROM Cost WHERE userId = ?");
+                    "SELECT * FROM Cost WHERE userId = ? ORDER BY purchased DESC");
         
             query.setString(1, key);
         
@@ -69,12 +80,12 @@ public class DbCostDao implements CostDao<Cost, String> {
             List<Cost> costs = new ArrayList<>();
         
             while (result.next()) {
-                costs.add(
-                        new Cost(
-                                Category.valueOf(result.getString("category").toUpperCase()),
-                                result.getDouble("price"),
-                                Date.valueOf(result.getString("purchased")).toLocalDate(),
-                                result.getString("userId")));
+                costs.add(new Cost(
+                        result.getInt("id"),
+                        Category.valueOf(result.getString("category").toUpperCase()),
+                        result.getDouble("price"),
+                        Date.valueOf(result.getString("purchased")).toLocalDate(),
+                        result.getString("userId")));
             }
             result.close();
             query.close();

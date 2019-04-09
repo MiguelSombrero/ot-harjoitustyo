@@ -4,23 +4,48 @@ package budgetapp.domain;
 import budgetapp.dao.UserDao;
 import java.sql.SQLException;
 
+/**
+ * Luokka tarjoaa käyttäjätilin hallintaan tarvittavat toiminnallisuudet.
+ */
+
 public class UserController {
     
     private UserDao userDao;
     private User user;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param userDao Käyttäjän Dao-toiminnalisuudet tarjoava luokka
+     */
     public UserController(UserDao userDao) {
         this.userDao = userDao;
     }
     
+    /**
+     * Metodi palauttaa sovellukseen kirjautuneen käyttäjän.
+     * 
+     * @return käyttäjä
+     */
     public User getUser() {
         return this.user;
     }
     
+    /**
+     * Metodi kirjaa käyttäjän ulos.
+     */
     public void logoutUser() {
         this.user = null;
     }
     
+    /**
+     * Metodi luo uuden käyttäjän annetulla käyttäjätunnuksella ja salasanalla,
+     * mikäli tunnus ei ole käytössä.
+     * 
+     * @param username  Käyttäjätunnus
+     * @param password  Salasana
+     * @return Kokonaisluku, joka kertoo käyttäjätilin luonnin onnistumisesta
+     */
     public Integer createUser(String username, String password) {
         try {
             if (userDao.read(username) == null) {

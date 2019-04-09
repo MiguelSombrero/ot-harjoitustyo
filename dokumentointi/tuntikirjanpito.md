@@ -10,3 +10,4 @@ päivä | aika | mitä tein
 29.3 | 4 | Testien suunnittelua DbUserDao luokalle
 1.4 | 3 | Pakkauskaavion suunnittelu ja dokumenttien täydennystä
 4.4 | 3 | Lisää testejä mm. DbCostDao luokalle
+8.4 | 2 | Testejä ja ensimmäiset JavaDoc määrittelyt

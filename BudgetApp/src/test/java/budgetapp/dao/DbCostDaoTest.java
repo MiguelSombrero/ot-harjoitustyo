@@ -6,7 +6,10 @@ import budgetapp.domain.Cost;
 import java.io.FileInputStream;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,25 +46,44 @@ public class DbCostDaoTest {
         dao = new DbCostDao(path, user, password, driver);
         
         dao.create(new Cost(1, Category.ALCOHOL, 12.90, Date.valueOf("2019-04-05").toLocalDate(), "Miika"));
-        dao.create(new Cost(1, Category.EDUCATION, 54.90, Date.valueOf("2019-03-29").toLocalDate(), "Miika"));
-        dao.create(new Cost(1, Category.SUPLEMENTS, 10.99, Date.valueOf("2019-02-25").toLocalDate(), "Miika"));
-        dao.create(new Cost(1, Category.ALCOHOL, 1.90, Date.valueOf("2018-04-07").toLocalDate(), "Jukka"));
-        dao.create(new Cost(1, Category.COSMETICS, 34.0, Date.valueOf("2019-02-05").toLocalDate(), "Jukka"));
+        dao.create(new Cost(2, Category.EDUCATION, 54.90, Date.valueOf("2019-03-29").toLocalDate(), "Miika"));
+        dao.create(new Cost(3, Category.SUPLEMENTS, 10.99, Date.valueOf("2019-02-25").toLocalDate(), "Miika"));
+        dao.create(new Cost(4, Category.ALCOHOL, 1.90, Date.valueOf("2018-04-07").toLocalDate(), "Jukka"));
+        dao.create(new Cost(5, Category.COSMETICS, 34.0, Date.valueOf("2019-02-05").toLocalDate(), "Jukka"));
     }
     
     @Test
     public void readCostWorks() throws SQLException {
-        assertTrue(dao.list("Miika") != null);
+        assertTrue(dao.listByUser("Miika") != null);
     }
     
     @Test
     public void savesMoreThanOneCost() throws SQLException {
-        assertEquals(3, dao.list("Miika").size());
+        assertEquals(3, dao.listByUser("Miika").size());
     }
     
-            
-    // tähän remove testit
+    @Test
+    public void removeCostDeletesCost() throws SQLException {
+        dao.remove(1);
+        List<Cost> cost = dao.listByUser("Miika").stream()
+                .filter(current -> current.getId() == 1)
+                .collect(Collectors.toCollection(ArrayList::new));
+        
+        assertTrue(cost.isEmpty());
+    }
     
+    @Test
+    public void removeCostRemovesOnlyOneCost() throws SQLException {
+        dao.remove(1);
+        List<Cost> cost = dao.listByUser("Miika");
+        assertEquals(2, cost.size());
+    }
+    
+    @Test
+    public void removeByUserWorks() throws SQLException {
+        // miten testaat, kun hakee aina uudelleen tietokannasta?
+    }
+      
     @After
     public void tearDown() {
         this.temp.delete();

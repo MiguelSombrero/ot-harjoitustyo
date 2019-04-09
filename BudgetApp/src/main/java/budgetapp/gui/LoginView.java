@@ -4,15 +4,19 @@ package budgetapp.gui;
 
 import budgetapp.domain.CostController;
 import budgetapp.domain.UserController;
+import java.util.Optional;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class LoginView {
@@ -43,6 +47,7 @@ public class LoginView {
         Button changeView = new Button("New user ?");
         
         Label helpText = new Label("LOGIN");
+        helpText.setId("heading");
         Label usernameText = new Label("Username:");
         Label passwordText = new Label("Password:");
         
@@ -78,8 +83,8 @@ public class LoginView {
         });
         
         createUser.setOnAction((event) -> {
-            String user = username.getText();
-            String passwd = password.getText();
+            String user = username.getText().trim();
+            String passwd = password.getText().trim();
             
             if (!userController.checkCredentials(user) || !userController.checkCredentials(passwd)) {
                 createAlert(warning, "Username and password must be 5-15 caharacters!");
@@ -119,11 +124,11 @@ public class LoginView {
         });
         
         frame.add(helpText, 1, 0);
-        frame.add(usernameText, 0, 1);
-        frame.add(username, 1, 1);
-        frame.add(passwordText, 0, 2);
-        frame.add(password, 1, 2);
-        frame.add(login, 1, 3);
+        frame.add(usernameText, 1, 2);
+        frame.add(username, 1, 3);
+        frame.add(passwordText, 1, 4);
+        frame.add(password, 1, 5);
+        frame.add(login, 1, 6);
         
         layout.setCenter(frame);
         layout.setTop(changeView);
@@ -138,18 +143,18 @@ public class LoginView {
         helpText.setText("CREATE USER");
         changeView.setText("Login");
         frame.getChildren().remove(login);
-        frame.add(createUser, 1, 3);
+        frame.add(createUser, 1, 6);
     }
     
     public void changeToLoginView (Label helpText, Button changeView, GridPane frame, Button login, Button createUser) {
         helpText.setText("LOGIN");
         changeView.setText("New user ?");
         frame.getChildren().remove(createUser);
-        frame.add(login, 1, 3);
+        frame.add(login, 1, 6);
     }
     
-    public void createAlert(Alert type, String text) {
+    public Optional<ButtonType> createAlert(Alert type, String text) {
         type.setContentText(text);
-        type.showAndWait();
+        return type.showAndWait();
     }
 }

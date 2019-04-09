@@ -33,9 +33,4 @@ public class FakeUserDao implements UserDao<User, String> {
         users.remove(key);
     }
 
-    @Override
-    public List<User> list() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

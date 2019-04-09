@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FakeCostDao implements CostDao<Cost, String> {
+public class FakeCostDao implements CostDao<Cost, Integer> {
 
     HashMap<String, List<Cost>> costs = new HashMap<>();
     
@@ -20,12 +20,17 @@ public class FakeCostDao implements CostDao<Cost, String> {
     }
 
     @Override
-    public void remove(String key) {
-        costs.remove(key);
+    public void remove(Integer key) {
+        
     }
 
     @Override
-    public List<Cost> list(String key) throws SQLException {
+    public void removeByUser(String key) {
+        costs.remove(key);
+    }
+    
+    @Override
+    public List<Cost> listByUser(String key) throws SQLException {
         return costs.get(key);
     }
     

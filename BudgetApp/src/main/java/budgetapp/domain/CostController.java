@@ -4,6 +4,7 @@ package budgetapp.domain;
 import budgetapp.dao.CostDao;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CostController {
@@ -24,17 +25,22 @@ public class CostController {
         }
     }
     
+    public Integer removeCost(Integer id) {
+        try {
+           costDao.remove(id);
+           return 0;
+           
+        } catch (SQLException e) {
+           return 2;
+        }
+    }
+    
     public List<Cost> getCosts(String user) {
         try {
-            List<Cost> costs = costDao.list(user);
-            
-            if (costs.isEmpty()) {
-                return null;
-            }
-            return costs;
+            return costDao.listByUser(user);
             
         } catch (SQLException e) {
-            return null;
+            return new ArrayList<>();
         }
     }
     
@@ -87,6 +93,6 @@ public class CostController {
     }
     
     public void emptyCostsCache(String user) {
-        costDao.remove(user);
+        costDao.removeByUser(user);
     }
 }

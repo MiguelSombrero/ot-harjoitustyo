@@ -95,9 +95,4 @@ public class DbUserDao implements UserDao<User, String> {
         connection.close();
     }
 
-    @Override
-    public List<User> list() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

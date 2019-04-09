@@ -8,7 +8,10 @@ public interface CostDao<T, K> {
     
     T create(T object) throws SQLException;
     
-    void remove(K key);
+    void remove(K key) throws SQLException;
     
-    List<T> list(K key) throws SQLException;
+    void removeByUser(String key);
+    
+    List<T> listByUser(String key) throws SQLException;
+    
 }

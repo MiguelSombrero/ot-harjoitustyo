@@ -14,5 +14,4 @@ public interface UserDao<T, K> {
     
     void remove(K key) throws SQLException;
     
-    List<T> list();
 }

@@ -22,3 +22,7 @@
     -fx-max-width: Infinity;
     -fx-alignment: CENTER;
 }
+#heading {
+    -fx-font: 14px Tahoma;
+    -fx-font-weight: BOLD;
+}

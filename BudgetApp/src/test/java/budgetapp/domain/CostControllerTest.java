@@ -20,78 +20,75 @@ public class CostControllerTest {
         
         costController.addCost(Category.CAFE, 26.7, Date.valueOf("2019-03-20").toLocalDate(), "Miika");
         
+        costController.addCost(Category.CAFE, 6.99, Date.valueOf("2019-04-01").toLocalDate(), "Jukka");
+        costController.addCost(Category.CAFE, 12.80, Date.valueOf("2019-04-14").toLocalDate(), "Jukka");
+        costController.addCost(Category.CAFE, 5.90, Date.valueOf("2019-03-14").toLocalDate(), "Jukka");
+        costController.addCost(Category.CLOTHES, 56.89, Date.valueOf("2019-03-25").toLocalDate(), "Jukka");
+        costController.addCost(Category.ALCOHOL, 12.99, Date.valueOf("2018-04-10").toLocalDate(), "Jukka");
+        costController.addCost(Category.ALCOHOL, 34.0, Date.valueOf("2018-04-13").toLocalDate(), "Jukka");
     }
     
     @Test
     public void addOneCostSamePerson() throws SQLException {
-        assertEquals(1, costDao.list("Miika").size());
+        assertEquals(1, costDao.listByUser("Miika").size());
     }
     
     @Test
-    public void addTwoCostsSamePerson() throws SQLException {
-        costController.addCost(Category.CLOTHES, 56.7, Date.valueOf("2018-03-21").toLocalDate(), "Miika");
-        assertEquals(2, costDao.list("Miika").size());
-    }
-    
-    @Test
-    public void addTwoCostsDifferentPerson() throws SQLException {
-        assertEquals(1, costDao.list("Miika").size());
+    public void addMoreThanOneCostsSamePerson() throws SQLException {
+        assertEquals(6, costDao.listByUser("Jukka").size());
     }
     
     @Test
     public void addCostSavesCategoryRight() throws SQLException {
-        assertEquals("Cafe", costDao.list("Miika").get(0).getCategory().toString());
+        assertEquals("Cafe", costDao.listByUser("Miika").get(0).getCategory().toString());
     }
     
     @Test
     public void addCostSavesPriceRight() throws SQLException {
-        assertEquals(26.7, costDao.list("Miika").get(0).getPrice(), 0.01);
+        assertEquals(26.7, costDao.listByUser("Miika").get(0).getPrice(), 0.01);
     }
     
     @Test
     public void addCostSavesPurchasedRight() throws SQLException {
-        assertEquals("2019-03-20", costDao.list("Miika").get(0).getPurchased().toString());
+        assertEquals("2019-03-20", costDao.listByUser("Miika").get(0).getPurchased().toString());
     }
     
     @Test
     public void addCostSavesUserRight() throws SQLException {
-        assertEquals("Miika", costDao.list("Miika").get(0).getUser());
+        assertEquals("Miika", costDao.listByUser("Miika").get(0).getUser());
     }
     
     @Test
     public void emptyCacheWorks() throws SQLException {
         costController.emptyCostsCache("Miika");
-        assertTrue(costDao.list("Miika") == null);
+        assertTrue(costDao.listByUser("Miika") == null);
     }
     
     @Test
     public void getCostsFromDatabaseNotNull() throws SQLException {
-        
+        assertEquals(1, costController.getCosts("Miika").size());
     }
     
-    @Test
     public void getCostsFromDatabaseNull() throws SQLException {
-        
+        assertTrue(costController.getCosts("Tyhja").isEmpty());
     }
     
     @Test
     public void sumsRightCostsByWeekday() throws SQLException {
-        costController.addCost(Category.CAFE, 6.99, Date.valueOf("2019-04-01").toLocalDate(), "Jukka");
-        costController.addCost(Category.CLOTHES, 56.89, Date.valueOf("2019-03-25").toLocalDate(), "Jukka");
-        costController.addCost(Category.ALCOHOL, 12.99, Date.valueOf("2019-03-26").toLocalDate(), "Jukka");
-        
-        List<Cost> costs = costDao.list("Jukka");
+        List<Cost> costs = costDao.listByUser("Jukka");
         assertEquals(63.88, costController.sumWeekday(costs, new double[8])[1], 0.01);
     }
     
     @Test
     public void sumsRightCostsByMonth() throws SQLException {
-        
+        List<Cost> costs = costDao.listByUser("Jukka");
+        assertEquals(66.78, costController.sumMonth(costs, new double[13])[4], 0.01);
     }
     
     @Test
     public void sumsRightCostsByCategory() throws SQLException {
-        
+        List<Cost> costs = costDao.listByUser("Jukka");
+        assertEquals(46.99, costController.sumCategory(costs, new double[Category.values().length+1])[0], 0.01);
     }
     
     @Test

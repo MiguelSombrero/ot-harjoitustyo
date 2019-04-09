@@ -2,6 +2,7 @@
 package budgetapp.domain;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Cost {
     
@@ -61,6 +62,11 @@ public class Cost {
     
     public String getUser() {
         return this.user;
+    }
+    
+    public String toString() {
+        return this.purchased.format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))
+                + ": " + this.category + ", " + this.price + " euro";
     }
     
 }
