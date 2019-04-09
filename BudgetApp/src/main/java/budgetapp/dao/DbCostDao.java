@@ -48,7 +48,7 @@ public class DbCostDao implements CostDao<Cost, Integer> {
     }
 
     @Override
-    public void remove (Integer id) throws SQLException {
+    public void remove(Integer id) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
         PreparedStatement query = connection.prepareStatement("DELETE FROM Cost WHERE id = ?");
         query.setInt(1, id);

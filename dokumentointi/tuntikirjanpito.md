@@ -11,3 +11,6 @@ päivä | aika | mitä tein
 1.4 | 3 | Pakkauskaavion suunnittelu ja dokumenttien täydennystä
 4.4 | 3 | Lisää testejä mm. DbCostDao luokalle
 8.4 | 2 | Testejä ja ensimmäiset JavaDoc määrittelyt
+9.4 | 3 | Viikon 5 vaatimusten tekeminen projektiin
+
+yht | 33 |

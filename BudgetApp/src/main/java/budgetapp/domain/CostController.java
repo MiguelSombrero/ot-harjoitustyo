@@ -27,11 +27,11 @@ public class CostController {
     
     public Integer removeCost(Integer id) {
         try {
-           costDao.remove(id);
-           return 0;
+            costDao.remove(id);
+            return 0;
            
         } catch (SQLException e) {
-           return 2;
+            return 2;
         }
     }
     
