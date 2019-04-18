@@ -12,5 +12,7 @@ päivä | aika | mitä tein
 4.4 | 3 | Lisää testejä mm. DbCostDao luokalle
 8.4 | 2 | Testejä ja ensimmäiset JavaDoc määrittelyt
 9.4 | 3 | Viikon 5 vaatimusten tekeminen projektiin
+16.4 | 4 | Testien, Jacadocin ja dokumentaation edistämistä
+18.4 | 2 | Testausta ja uuis release
 
-yht | 33 |
+yht | 39 |

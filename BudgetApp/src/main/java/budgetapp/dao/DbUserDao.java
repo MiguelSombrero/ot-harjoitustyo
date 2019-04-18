@@ -8,8 +8,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
+/**
+ * Luokka, joka tarjoaa metodit käyttäjän tallentamiseen tietokantaan.
+ */
 public class DbUserDao implements UserDao<User, String> {
 
     private String path;
@@ -17,6 +19,14 @@ public class DbUserDao implements UserDao<User, String> {
     private String password;
     private String driver;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param path config.properties tiedostossa määritelty polku tietokantaan
+     * @param dbUser tietokannan käyttäjätunnus
+     * @param password tietokannan salasana
+     * @param driver  tietokannan ajurin nimi
+     */
     public DbUserDao(String path, String dbUser, String password, String driver) {
         this.path = path;
         this.dbUser = dbUser;
@@ -24,6 +34,13 @@ public class DbUserDao implements UserDao<User, String> {
         this.driver = driver;
     }
     
+    /**
+     * Metodi, joka tallentaa käyttäjän tietokantaan.
+     * 
+     * @param object Sovelluksessa luotu tietokantaan tallennettava käyttäjä-olio
+     * @return Tietokantaan tallennettu käyttäjä
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public User create(User object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
@@ -41,6 +58,12 @@ public class DbUserDao implements UserDao<User, String> {
         return object;
     }
 
+    /**
+     * Metodi, joka poimii käyttäjän tietokannasta käyttäjätunnuksen perusteella
+     * @param key Käyttäjätunnus, jonka perusteella poimittava käyttäjä tunnistetaan
+     * @return Tietokannasta poimittu käyttäjä
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public User read(String key) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
@@ -66,6 +89,13 @@ public class DbUserDao implements UserDao<User, String> {
         return user;
     }
 
+    /**
+     * Metodi, joka päivittää tietokannassa olevan käyttäjän salasanan.
+     * 
+     * @param object Käyttäjä, jonka salasana päivitetään
+     * @return Käyttäjä, jonka salasana päivitettiin
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public User update(User object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
@@ -82,6 +112,12 @@ public class DbUserDao implements UserDao<User, String> {
         return object;
     }
 
+    /**
+     * Metodi, joka poistaa käyttäjän ja kaikki sen tiedot tietokannasta.
+     * 
+     * @param key Käyttäjätunnus, jonka perusteella poistettava käyttäjä tunnistetaan
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public void remove(String key) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);

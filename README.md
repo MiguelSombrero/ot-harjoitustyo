@@ -6,6 +6,8 @@ BudgetApp -sovelluksen avulla on mahdollista pitää kirjaa käyttäjän menoist
 
 ## Dokumentaatio
 
+[Käyttöohje](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/kaytto_ohje.md)
+
 [Vaatimusmäärittely](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/vaatimusmaarittely.md)
 
 [Arkkitehtuurikuvaus](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/arkkitehtuuri.md)
@@ -13,6 +15,8 @@ BudgetApp -sovelluksen avulla on mahdollista pitää kirjaa käyttäjän menoist
 [Työaikakirjanpito](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/tuntikirjanpito.md)
 
 ## Releaset
+
+[New release - 0.1](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/release01)
 
 [Viikko 5](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/viikko5)
 

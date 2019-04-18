@@ -4,6 +4,9 @@ package budgetapp.domain;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Yksittäistä kustannusta kuvaava luokka.
+ */
 public class Cost {
     
     private Integer id;
@@ -12,6 +15,15 @@ public class Cost {
     private LocalDate purchased;
     private String user;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param id Kustannuksen pääavain tietokannassa
+     * @param category Kustannuksen kategoria, esimerkiksi "Alkoholi"
+     * @param price Kustannuksen hinta
+     * @param purchased Päivämäärä, jolloin kustannus tehtiin
+     * @param user Käyttäjä, johon kustannus liittyy
+     */
     public Cost(Integer id, Category category, Double price, LocalDate purchased, String user) {
         this.id = id;
         this.category = category;
@@ -64,6 +76,11 @@ public class Cost {
         return this.user;
     }
     
+    /**
+     * Kustannuksen tulostamiseen käytetty metodi.
+     * 
+     * @return Merkkijono, jossa on kustannuksen päivämäärä, kategoria ja hinta euroina
+     */
     public String toString() {
         return this.purchased.format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))
                 + ": " + this.category + ", " + this.price + " euro";

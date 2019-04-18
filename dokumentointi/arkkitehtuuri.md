@@ -1,10 +1,22 @@
 # Arkkitehtuurikuvaus
 
-## Rakenne
+## Rakenne ja sovelluslogiikka
 
 Ohjelman rakenne noudattaa kolmitasoista kerrosarkkitehtuuria, jossa käyttöliittymä, sovelluslogiikka ja tiedon pysyväistallennukseen tarkoitetut Dao-luokat on eriytetty:
 
 ![pakkauskaavio](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/dokumentointi/kuvat/pakkauskaavio.png)
+
+Pakkaus *gui* sisältää JavaFX:llä toteutetun graafisen käyttöliittymän, *domain* sovelluslogiikan ja *dao* tietojen pysyväistallennukseen tarkoitetut Dao-luokat.
+
+Sovelluksen loogisen datamallin muodostavat *User* ja *Cost* -luokat, jotka kuvaavat järjestelmän käyttäjiä ja käyttäjien kustannuksia - sekä kustannuksiin liittyvä *Category* -luokka, joka on Javan ns. *lueteltu tyyppi* ja kuvaa kustannuksen kategoriaa.
+
+Toiminnallisista kokonaisuuksista vastaa *UserController* ja *CostController* -luokat, jotka tarjoavat metodit kaikkiin käyttöliittymän toiminnallisuuksiin. Näitä toiminnallisuuksia on mm.
+
+* void logoutUser()
+* Integer createUser(String username, String password)
+* Integer addCost(Category category, Double price, LocalDate purchased, String user)
+
+*UserController* ja *CostController* -luokat pääsevät käsiksi käyttäjiin ja kustannuksiin *dao* -pakkauksessa olevien *DbUserDao* ja *DbCostDao* -luokien kautta, jotka toteuttavat *UserDao* ja *CostDao* -rajapinnat. Luokkien toteutukset injektoidaan sovelluslogiikalle konstruktorikutsun yhteydessä. 
 
 ## Päätoiminnallisuudet
 

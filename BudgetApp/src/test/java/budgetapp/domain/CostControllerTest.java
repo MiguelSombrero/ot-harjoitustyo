@@ -13,8 +13,11 @@ public class CostControllerTest {
     private FakeCostDao costDao;
     private CostController costController;
     
+    private List<Cost> costs;
+    private List<Cost> costs2;
+    
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
         this.costDao = new FakeCostDao();
         this.costController = new CostController(costDao);
         
@@ -26,6 +29,14 @@ public class CostControllerTest {
         costController.addCost(Category.CLOTHES, 56.89, Date.valueOf("2019-03-25").toLocalDate(), "Jukka");
         costController.addCost(Category.ALCOHOL, 12.99, Date.valueOf("2018-04-10").toLocalDate(), "Jukka");
         costController.addCost(Category.ALCOHOL, 34.0, Date.valueOf("2018-04-13").toLocalDate(), "Jukka");
+        
+        costController.addCost(Category.CLOTHES, 12.90, Date.valueOf("2019-05-14").toLocalDate(), "Jarno");
+        costController.addCost(Category.CLOTHES, 116.89, Date.valueOf("2019-05-07").toLocalDate(), "Jarno");
+        costController.addCost(Category.ALCOHOL, 2.90, Date.valueOf("2018-12-25").toLocalDate(), "Jarno");
+        costController.addCost(Category.ALCOHOL, 26.00, Date.valueOf("2018-12-04").toLocalDate(), "Jarno");
+        
+        costs = costDao.listByUser("Jukka");
+        costs2 = costDao.listByUser("Jarno");
     }
     
     @Test
@@ -75,30 +86,41 @@ public class CostControllerTest {
     
     @Test
     public void sumsRightCostsByWeekday() throws SQLException {
-        List<Cost> costs = costDao.listByUser("Jukka");
         assertEquals(63.88, costController.sumWeekday(costs, new double[8])[1], 0.01);
     }
     
     @Test
     public void sumsRightCostsByMonth() throws SQLException {
-        List<Cost> costs = costDao.listByUser("Jukka");
         assertEquals(66.78, costController.sumMonth(costs, new double[13])[4], 0.01);
     }
     
     @Test
     public void sumsRightCostsByCategory() throws SQLException {
-        List<Cost> costs = costDao.listByUser("Jukka");
         assertEquals(46.99, costController.sumCategory(costs, new double[Category.values().length+1])[0], 0.01);
     }
     
     @Test
-    public void sumsRightCostsByMonthYearly() throws SQLException {
+    public void sumsRightCostsByWeekdayYearly() throws SQLException {
+        double[][] money = costController.sumWeekdayYearly(costs2, new double[30][8]);
         
+        assertEquals(129.79, money[19][2], 0.01);
+        assertEquals(28.90, money[18][2], 0.01);
+    }
+    
+    @Test
+    public void sumsRightCostsByMonthYearly() throws SQLException {
+        double[][] money = costController.sumMonthYearly(costs2, new double[30][Category.values().length+1]);
+        
+        assertEquals(129.79, money[19][5], 0.01);
+        assertEquals(28.90, money[18][12], 0.01);
     }
     
     @Test
     public void sumsRightCostsByCategoryYearly() throws SQLException {
+        double[][] money = costController.sumCategoryYearly(costs2, new double[30][Category.values().length+1]);
         
+        assertEquals(129.79, money[19][2], 0.01);
+        assertEquals(28.90, money[18][0], 0.01);
     }
     
 }
