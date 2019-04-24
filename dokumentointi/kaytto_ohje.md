@@ -4,7 +4,7 @@ Lataa tiedosto [BudgetApp.jar](https://github.com/MiguelSombrero/ot-harjoitustyo
 
 ## Konfigurointi
 
-Sovellus olettaa, että sen käynnistyshakemistossa on *config.properties* -tiedosto, joka määrittelee tietokannan, johon käyttäjän ja niihin liittyvät tiedot tallennetaan. Muodostuvan tietokantatiedoston nimi on *budget.db* ja se muodostetaan samaan kansioon, missä sovellus käynnistetään.
+Sovellus olettaa, että sen käynnistyshakemistossa on [config.properties](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/BudgetApp/config.properties) -tiedosto, joka määrittelee tietokannan, johon käyttäjän ja niihin liittyvät tiedot tallennetaan. Muodostuvan tietokantatiedoston nimi on *budget.db* ja se muodostetaan samaan kansioon, missä sovellus käynnistetään.
 
 ## Sovelluksen käynnistäminen
 

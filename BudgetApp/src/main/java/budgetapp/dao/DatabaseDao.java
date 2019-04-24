@@ -5,6 +5,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Tietokannan luomiseen tarkoitettu luokka.
+ * 
+ * @author miika
+ */
 public class DatabaseDao {
     
     private String path;
@@ -12,6 +17,14 @@ public class DatabaseDao {
     private String password;
     private String driver;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param path config.properties -tiedostossa määritelty tietokannan polku
+     * @param user config.properties -tiedostossa määritelty tietokannan käyttäjätunnus 
+     * @param password config.properties -tiedostossa määritelty tietokannan salasana
+     * @param driver config.properties -tiedostossa määritelty tietokannan ajurin nimi
+     */
     public DatabaseDao(String path, String user, String password, String driver) {
         this.path = path;
         this.user = user;
@@ -19,6 +32,9 @@ public class DatabaseDao {
         this.driver = driver;
     }
     
+    /**
+     * Metodi, joka luo tietokannan taulut User ja Cost, mikäli niitä ei ole vielä luotu.
+     */
     public void createDatabase() {
         try {
             Class.forName(driver);

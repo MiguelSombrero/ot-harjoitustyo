@@ -18,6 +18,25 @@ Toiminnallisista kokonaisuuksista vastaa *UserController* ja *CostController* -l
 
 *UserController* ja *CostController* -luokat pääsevät käsiksi käyttäjiin ja kustannuksiin *dao* -pakkauksessa olevien *DbUserDao* ja *DbCostDao* -luokien kautta, jotka toteuttavat *UserDao* ja *CostDao* -rajapinnat. Luokkien toteutukset injektoidaan sovelluslogiikalle konstruktorikutsun yhteydessä. 
 
+## Käyttöliittymä
+
+Käyttöliittymä sisältää neljä erilaista näkymää:
+
+* kirjautuminen
+* uuden käyttäjän luominen
+* kustannusten lisääminen ja tarkastelu
+* käyttäjän tietojen muuttaminen ja tarkastelu
+
+Kirjautuminen ja uuden käyttäjän luominen on toteutettu yhtenä *Scene* -oliona ja tämä määrittely on eriytetty omaan luokkaansa [LoginView.java](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/BudgetApp/src/main/java/budgetapp/gui/LoginView.java). Kustannusten lisääminen ja tarkastelu sekä käyttäjän tietojen muuttaminen ja tarkastelu on toteutettu yhtenä *Scene* -oliona ja sen määrittely on eriytetty luokkaan [ApplicationView.java](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/BudgetApp/src/main/java/budgetapp/gui/ApplicationView.java). Kun käyttäjä kirjautuu järjestelmään, siirrytään *LoginView* -näkymästä *ApplicationView* -näkymään - ja kun käyttäjä kirjautuu ulos järjestelmästä, siirrytään *ApplicationView* -näkymästä *LoginView* -näkymään.
+
+Käyttöliittymän toteuttava koodi on pyritty eristämään täysin sovelluslogiikasta ja se lähinnä vain kutsuu sovelluslogiikan toteuttavia luokkia sopivilla parametreilla.
+
+## Tietojen pysyväistallennus
+
+Luokka *DatabaseDao* luo tietokannan ja sen taulut *User* ja *Cost*, mikäli niitä ei ole vielä luotu. Tietokannanhallintajärjestelmänä käytetään *SQLite*ä ja siihen liittyvät konfiguraatiot on määritelty [config.properties](https://github.com/MiguelSombrero/ot-harjoitustyo/blob/master/BudgetApp/config.properties) tiedostossa.
+
+Pakkauksen *budgetapp.dao* luokat *DbCostDao* ja *DbUserDao* huolehtivat käyttäjän tietojen tallentamisesta tietokantaan. Luokkien toteutus on eristetty rajapintojen *CostDao* ja *UserDao*, eikä sovelluslogiikka käytä luokkia suoraan. Näin ollen niiden toteutus voidaan tarvittaessa korvata. Esimerkiksi testaamisessa on käytetty luokkien keskusmuistitoteutuksia *FakeCostDao* ja *FakeUserDao*.
+
 ## Päätoiminnallisuudet
 
 Alla on kuvattuna sovelluksen päätoiminnallisuudet sekvenssikaaviona

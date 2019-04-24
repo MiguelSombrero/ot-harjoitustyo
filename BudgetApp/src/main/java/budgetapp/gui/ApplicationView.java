@@ -37,12 +37,24 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Käyttöliittymän sovellusnäkymän rakentava luokka.
+ * 
+ * @author miika
+ */
 public class ApplicationView {
     
     private UserController userController;
     private CostController costController;
     private Scene loginScene;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param userController Käyttäjän sovelluslogiikasta vastaava luokka
+     * @param costController Käyttäjään liittyvien kustannusten sovelluslogiikasta vastaava luokka
+     * @param loginScene login -näkymää vastaava Scene-olio
+     */
     public ApplicationView (UserController userController, CostController costController, Scene loginScene) {
         this.userController = userController;
         this.costController = costController;
@@ -53,6 +65,12 @@ public class ApplicationView {
         return this.loginScene;
     }
     
+    /**
+     * Metodi, joka rakentaa sovellusnäkymän.
+     * 
+     * @param primaryStage Stage-olio, johon metodissa luotava Scene-olio asetetaan
+     * @return Sovellusnäkymää vastaava Scene-olio
+     */
     public Scene getApplicationScene (Stage primaryStage) {
         // main window
         TabPane application = new TabPane();
@@ -453,6 +471,14 @@ public class ApplicationView {
         return scene;
     }
     
+    /**
+     * Metodi, joka huolehtii käyttäjän kirjaamisesta ulos.
+     * 
+     * @param primaryStage Stage-olio, johon asetetaan login-näkymä käyttäjän kirjautuessa ulos
+     * @param layout Sovellusnäkymän asettelu
+     * @param addCostFrame Sovellusnäkymän Cost-välilehti
+     * @param infoText ohjeteksti, joka näytetään käyttöliittymässä
+     */
     public void logout (Stage primaryStage, BorderPane layout, GridPane addCostFrame, Label infoText) {
         costController.emptyCostsCache(userController.getUser().getUsername());
         userController.logoutUser();
@@ -461,6 +487,15 @@ public class ApplicationView {
         primaryStage.setScene(loginScene);
     }
     
+    /**
+     * Metodi, joka rakentaa pylväskaavion annettujen parametrien perusteella.
+     * 
+     * @param title Pylväskaavion otsikko
+     * @param x X-akselin seliteteksti
+     * @param y Y-akselin seliteteksti
+     * @param legend Tieto siitä, näytetäänkö kaaviossa selite
+     * @return pylväskaavio
+     */
     public BarChart<String, Number> createBarChart (String title, String x, String y, boolean legend) {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -475,6 +510,12 @@ public class ApplicationView {
         return barchart;
     }
     
+    /**
+     * Metodi tarkastaa onko syötetty merkkijono sellaista muotoa, että sen voi muuntaa numeroksi.
+     * 
+     * @param number Merkkijono, joka halutaan muuntaa numeroksi
+     * @return tieto siitä, onko merkkijono muutettavissa numeroksi
+     */
     public boolean isNumber (String number) {
         try {
             Double.parseDouble(number);
@@ -485,6 +526,13 @@ public class ApplicationView {
         return true;
     }
     
+    /**
+     * Metodi, joka rakentaa Alert-ikkunan annettujen parametrien perusteella.
+     * 
+     * @param type Alert-ikkunan tyyppi
+     * @param text Teksti, joka asetetaan Alert-ikkunaan
+     * @return Palauttaa tiedon siitä, mitä painiketta käyttäjä painoi
+     */
     public Optional<ButtonType> createAlert(Alert type, String text) {
         type.setContentText(text);
         return type.showAndWait();

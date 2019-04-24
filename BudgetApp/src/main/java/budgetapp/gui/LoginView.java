@@ -15,16 +15,25 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * Luokka, joka rakentaa login-näkymän.
+ * 
+ * @author miika
+ */
 public class LoginView {
     
     private UserController userController;
     private CostController eventController;
     private Scene appScene;
     
+    /**
+     * Luokan konstruktori.
+     * 
+     * @param userController Käyttäjän sovelluslogiikasta vastaava luokka
+     * @param eventController Käyttäjään liittyvien kustannusten sovelluslogiikasta vastaava luokka
+     */
     public LoginView (UserController userController, CostController eventController) {
         this.userController = userController;
         this.eventController = eventController;
@@ -35,6 +44,12 @@ public class LoginView {
         this.appScene = appScene;
     }
     
+    /**
+     * Metodi, joka rakentaa login-näkymän.
+     * 
+     * @param primaryStage Stage-olio, johon metodissa luotava Scene-olio asetetaan
+     * @return Login-näkymää vastaava Scene-olio
+     */
     public Scene getLoginScene (Stage primaryStage) {
         BorderPane layout = new BorderPane();
         layout.getStyleClass().add("login");
@@ -153,6 +168,13 @@ public class LoginView {
         frame.add(login, 1, 6);
     }
     
+    /**
+     * Metodi, joka rakentaa Alert-ikkunan annettujen parametrien perusteella.
+     * 
+     * @param type Alert-ikkunan tyyppi
+     * @param text Teksti, joka asetetaan Alert-ikkunaan
+     * @return Palauttaa tiedon siitä, mitä painiketta käyttäjä painoi
+     */
     public Optional<ButtonType> createAlert(Alert type, String text) {
         type.setContentText(text);
         return type.showAndWait();

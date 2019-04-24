@@ -24,6 +24,7 @@ Alkuvaiheessa sovelluksella on vain *peruskäyttäjä* -rooli. Jatkokehityksess�
 ### Kirjautumisen jälkeen
 
 * Käyttäjä voi lisätä uuden kuluerän
+* Käyttäjä voi tarkastella ja poistaa lisättyjä kuluja yksitellen
 * Käyttäjä voi katsoa tilastot omasta kulutushistoriastaan viikonpäivitäin, kuukausittain tai vuosittain, joko summattuna kaikilta vuosilta, tai jaoteltuna vuosittain.
 * Käyttäjä voi vaihtaa salasanan
     * Uusi salasana pitää kirjoittaa 2 kertaa oikein, jotta salasana vaihdetaan
@@ -36,8 +37,6 @@ Alkuvaiheessa sovelluksella on vain *peruskäyttäjä* -rooli. Jatkokehityksess�
 ## Jatkokehitys
 
 * Toiminnallisuus, jonka avulla käyttäjä/pääkäyttäjä voi lisätä uusia kulutuskategorioita
-* Toiminnallisuus, jolla käyttäjä pääsee tarkastelemaan lisättyjä kuluja yksitellen
-* Toiminnallisuus yksittäisten kulujen poistamiseen
 * Salasanojen tallentaminen tietokantaan salattuna
 
 

@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Cost -luokan olioiden pysyväistallennuksesta vastaava luokka.
+ * 
+ */
 public class DbCostDao implements CostDao<Cost, Integer> {
 
     private String path;
@@ -21,6 +25,14 @@ public class DbCostDao implements CostDao<Cost, Integer> {
     private String driver;
     private HashMap<String, List<Cost>> cache;
     
+    /**
+     * Luokan kostruktori.
+     * 
+     * @param path config.properties -tiedostossa määritelty tietokannan polku
+     * @param dbUser config.properties -tiedostossa määritelty tietokannan käyttäjätunnus 
+     * @param password config.properties -tiedostossa määritelty tietokannan salasana
+     * @param driver config.properties -tiedostossa määritelty tietokannan ajurin nimi
+     */
     public DbCostDao(String path, String dbUser, String password, String driver) {
         this.path = path;
         this.dbUser = dbUser;
@@ -29,6 +41,13 @@ public class DbCostDao implements CostDao<Cost, Integer> {
         this.cache = new HashMap<>();
     }
     
+    /**
+     * Metodi, joka vastaa Cost -olion tallentamisesta tietokantaan.
+     * 
+     * @param object Tietokantaan tallennettava Cost-olio
+     * @return Tietokantaan tallennettu olio
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public Cost create(Cost object) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
@@ -47,6 +66,12 @@ public class DbCostDao implements CostDao<Cost, Integer> {
         return object;
     }
 
+    /**
+     * Metodi, joka vastaa Cost -olion poistamisesta tietokannasta pääavaimen perusteella.
+     * 
+     * @param id Tietokannassa oleva pääavain, jonka perusteella kustannut poistetaan
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public void remove(Integer id) throws SQLException {
         Connection connection = DriverManager.getConnection(path, dbUser, password);
@@ -58,6 +83,10 @@ public class DbCostDao implements CostDao<Cost, Integer> {
         connection.close();
     }
     
+    /**
+     * Metodi, joka poistaa käyttäjään liittyvät kustannukset (Cost -oliot) sovelluksen välimuistista.
+     * @param key Käyttäjätunnus, jonka kustannukset poistetaan
+     */
     @Override
     public void removeByUser(String key) {
         // ON DELETE CASCADE will remove Costs from database when user is deleted
@@ -66,6 +95,13 @@ public class DbCostDao implements CostDao<Cost, Integer> {
         }
     }
 
+    /**
+     * Metodi, joka poimii kaikki kyseisen käyttäjän kustannukset (Cost-oliot) tietokannasta.
+     * 
+     * @param key Käyttäjätunnus, jonka kustannukset poimitaan
+     * @return Lista käyttäjän kustannuksista
+     * @throws SQLException Tietokannan mahdollisesti heittämä poikkeus
+     */
     @Override
     public List<Cost> listByUser(String key) throws SQLException {
         if (!cache.containsKey(key)) {

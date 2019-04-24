@@ -60,6 +60,12 @@ public class CostControllerTest {
     }
     
     @Test
+    public void removeCost() throws SQLException {
+        costController.removeCost(1);
+        assertEquals(null, costDao.getByID(1));
+    }
+    
+    @Test
     public void addCostSavesPurchasedRight() throws SQLException {
         assertEquals("2019-03-20", costDao.listByUser("Miika").get(0).getPurchased().toString());
     }
