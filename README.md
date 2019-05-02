@@ -18,7 +18,9 @@ BudgetApp -sovelluksen avulla on mahdollista pitää kirjaa käyttäjän menoist
 
 ## Releaset
 
-[New release - 0.1](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/release01)
+[Final release - 1.0](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/release1)
+
+[Release - 0.1](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/release01)
 
 [Viikko 5](https://github.com/MiguelSombrero/ot-harjoitustyo/releases/tag/viikko5)
 
